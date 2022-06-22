@@ -22,7 +22,7 @@ For the kubernetes controller:
 
 ## Non-goals
 
-* Create a CRD for managing DNS. `external-dns` does this - well, what it does not do is provide a way to reconcile multiple clients making updates to a single record.
+* Create a CRD for managing DNS. `external-dns` does this - well, what it does not do is provide a way to reconcile multiple clients making updates to a single record. `external-dns` doesn't have a method for cordianting multiple clients requesting an answer be appended to a single record. There seems to be [little interest in providing that functionality](https://github.com/kubernetes-sigs/external-dns/issues/1441), also.
 * Implement all possible DNS API's, if the project gets traction and a individuals want more integrations, open an issue and let's chat!
 
 ## Design
