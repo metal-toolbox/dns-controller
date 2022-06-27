@@ -14,7 +14,7 @@ CREATE TABLE owners (
 CREATE TABLE records (
   record_id UUID NOT NULL DEFAULT gen_random_uuid() UNIQUE,
   record STRING NOT NULL,
-  record_type NOT NULL,
+  record_type STRING NOT NULL,
   created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT now() NOT NULL,
   CONSTRAINT "primary" PRIMARY KEY (record, record_type)
@@ -28,10 +28,9 @@ CREATE TABLE answers (
   answer_ttl INT DEFAULT 3600 NOT NULL,
   owner_id UUID NOT NULL REFERENCES owners(owner_id) ON DELETE CASCADE ON UPDATE CASCADE,
   record_id UUID NOT NULL REFERENCES records(record_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  record STRING NOT NULL REFERENCES records(record) ON DELETE CASCADE ON UPDATE CASCADE,
   created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT now() NOT NULL,
-  CONSTRAINT "primary" PRIMARY KEY (record_id,record, answer_target, answer_type)
+  CONSTRAINT "primary" PRIMARY KEY (record_id, owner_id, answer_id, answer_target, answer_type)
 );
 
 CREATE TABLE answer_extras (
