@@ -1,3 +1,4 @@
+// Package main runs the dns controller
 package main
 
 //go:generate sqlboiler crdb --add-soft-deletes

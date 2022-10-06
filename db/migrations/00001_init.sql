@@ -52,5 +52,6 @@ CREATE TABLE answer_extras (
 DROP TABLE answers;
 DROP TABLE records;
 DROP TABLE owners;
+DROP TABLE answer_extras;
 
 -- +goose StatementEnd
