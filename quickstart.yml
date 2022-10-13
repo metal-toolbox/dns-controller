@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  dns-controller:
+    image: ghcr.io/metal-toolbox/dns-controller:v0.0.1
+    depends_on:
+      - crdb
+      - dns-controller-migrate
+    environment:
+      - DNS_CONTROLLER_OIDC_ENABLED=false
+      - DNS_CONTROLLER_DB_URI=postgresql://root@crdb:26257/defaultdb?sslmode=disable
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - hollow
+
+  dns-controller-migrate:
+    image: ghcr.io/metal-toolbox/dons-controller:v0.0.1
+    command:
+      migrate up
+    depends_on:
+      - crdb
+    environment:
+      - DNS_CONTROLLER_DB_URI=postgresql://root@crdb:26257/defaultdb?sslmode=disable
+    restart: on-failure
+    networks:
+      - hollow
+
+  crdb:
+    image: cockroachdb/cockroach:latest-v21.1
+    volumes:
+      - db:/cockroach/cockroach-data
+    command: start-single-node --insecure
+    ports:
+        - "8080:8080"
+        - "26257:26257"
+    restart: unless-stopped
+    networks:
+      - hollow
+
+volumes:
+  db:
+
+networks:
+  hollow:
