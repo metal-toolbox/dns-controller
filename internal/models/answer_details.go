@@ -22,8 +22,9 @@ import (
 	"github.com/volatiletech/strmangle"
 )
 
-// AnswerExtras is an object representing the database table.
-type AnswerExtras struct {
+// AnswerDetail is an object representing the database table.
+type AnswerDetail struct {
+	ID        string      `boil:"id" json:"id" toml:"id" yaml:"id"`
 	AnswerID  string      `boil:"answer_id" json:"answer_id" toml:"answer_id" yaml:"answer_id"`
 	Port      null.Int64  `boil:"port" json:"port,omitempty" toml:"port" yaml:"port,omitempty"`
 	Priority  null.Int64  `boil:"priority" json:"priority,omitempty" toml:"priority" yaml:"priority,omitempty"`
@@ -32,11 +33,12 @@ type AnswerExtras struct {
 	CreatedAt time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt time.Time   `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
-	R *answerExtrasR `boil:"-" json:"-" toml:"-" yaml:"-"`
-	L answerExtrasL  `boil:"-" json:"-" toml:"-" yaml:"-"`
+	R *answerDetailR `boil:"-" json:"-" toml:"-" yaml:"-"`
+	L answerDetailL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
-var AnswerExtrasColumns = struct {
+var AnswerDetailColumns = struct {
+	ID        string
 	AnswerID  string
 	Port      string
 	Priority  string
@@ -45,6 +47,7 @@ var AnswerExtrasColumns = struct {
 	CreatedAt string
 	UpdatedAt string
 }{
+	ID:        "id",
 	AnswerID:  "answer_id",
 	Port:      "port",
 	Priority:  "priority",
@@ -54,7 +57,8 @@ var AnswerExtrasColumns = struct {
 	UpdatedAt: "updated_at",
 }
 
-var AnswerExtrasTableColumns = struct {
+var AnswerDetailTableColumns = struct {
+	ID        string
 	AnswerID  string
 	Port      string
 	Priority  string
@@ -63,13 +67,14 @@ var AnswerExtrasTableColumns = struct {
 	CreatedAt string
 	UpdatedAt string
 }{
-	AnswerID:  "answer_extras.answer_id",
-	Port:      "answer_extras.port",
-	Priority:  "answer_extras.priority",
-	Protocol:  "answer_extras.protocol",
-	Weight:    "answer_extras.weight",
-	CreatedAt: "answer_extras.created_at",
-	UpdatedAt: "answer_extras.updated_at",
+	ID:        "answer_details.id",
+	AnswerID:  "answer_details.answer_id",
+	Port:      "answer_details.port",
+	Priority:  "answer_details.priority",
+	Protocol:  "answer_details.protocol",
+	Weight:    "answer_details.weight",
+	CreatedAt: "answer_details.created_at",
+	UpdatedAt: "answer_details.updated_at",
 }
 
 // Generated where
@@ -194,7 +199,8 @@ func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
 
-var AnswerExtrasWhere = struct {
+var AnswerDetailWhere = struct {
+	ID        whereHelperstring
 	AnswerID  whereHelperstring
 	Port      whereHelpernull_Int64
 	Priority  whereHelpernull_Int64
@@ -203,73 +209,74 @@ var AnswerExtrasWhere = struct {
 	CreatedAt whereHelpertime_Time
 	UpdatedAt whereHelpertime_Time
 }{
-	AnswerID:  whereHelperstring{field: "\"answer_extras\".\"answer_id\""},
-	Port:      whereHelpernull_Int64{field: "\"answer_extras\".\"port\""},
-	Priority:  whereHelpernull_Int64{field: "\"answer_extras\".\"priority\""},
-	Protocol:  whereHelpernull_String{field: "\"answer_extras\".\"protocol\""},
-	Weight:    whereHelpernull_String{field: "\"answer_extras\".\"weight\""},
-	CreatedAt: whereHelpertime_Time{field: "\"answer_extras\".\"created_at\""},
-	UpdatedAt: whereHelpertime_Time{field: "\"answer_extras\".\"updated_at\""},
+	ID:        whereHelperstring{field: "\"answer_details\".\"id\""},
+	AnswerID:  whereHelperstring{field: "\"answer_details\".\"answer_id\""},
+	Port:      whereHelpernull_Int64{field: "\"answer_details\".\"port\""},
+	Priority:  whereHelpernull_Int64{field: "\"answer_details\".\"priority\""},
+	Protocol:  whereHelpernull_String{field: "\"answer_details\".\"protocol\""},
+	Weight:    whereHelpernull_String{field: "\"answer_details\".\"weight\""},
+	CreatedAt: whereHelpertime_Time{field: "\"answer_details\".\"created_at\""},
+	UpdatedAt: whereHelpertime_Time{field: "\"answer_details\".\"updated_at\""},
 }
 
-// AnswerExtrasRels is where relationship names are stored.
-var AnswerExtrasRels = struct {
+// AnswerDetailRels is where relationship names are stored.
+var AnswerDetailRels = struct {
 	Answer string
 }{
 	Answer: "Answer",
 }
 
-// answerExtrasR is where relationships are stored.
-type answerExtrasR struct {
+// answerDetailR is where relationships are stored.
+type answerDetailR struct {
 	Answer *Answer `boil:"Answer" json:"Answer" toml:"Answer" yaml:"Answer"`
 }
 
 // NewStruct creates a new relationship struct
-func (*answerExtrasR) NewStruct() *answerExtrasR {
-	return &answerExtrasR{}
+func (*answerDetailR) NewStruct() *answerDetailR {
+	return &answerDetailR{}
 }
 
-func (r *answerExtrasR) GetAnswer() *Answer {
+func (r *answerDetailR) GetAnswer() *Answer {
 	if r == nil {
 		return nil
 	}
 	return r.Answer
 }
 
-// answerExtrasL is where Load methods for each relationship are stored.
-type answerExtrasL struct{}
+// answerDetailL is where Load methods for each relationship are stored.
+type answerDetailL struct{}
 
 var (
-	answerExtrasAllColumns            = []string{"answer_id", "port", "priority", "protocol", "weight", "created_at", "updated_at"}
-	answerExtrasColumnsWithoutDefault = []string{"answer_id"}
-	answerExtrasColumnsWithDefault    = []string{"port", "priority", "protocol", "weight", "created_at", "updated_at"}
-	answerExtrasPrimaryKeyColumns     = []string{"answer_id"}
-	answerExtrasGeneratedColumns      = []string{}
+	answerDetailAllColumns            = []string{"id", "answer_id", "port", "priority", "protocol", "weight", "created_at", "updated_at"}
+	answerDetailColumnsWithoutDefault = []string{"answer_id", "created_at", "updated_at"}
+	answerDetailColumnsWithDefault    = []string{"id", "port", "priority", "protocol", "weight"}
+	answerDetailPrimaryKeyColumns     = []string{"id"}
+	answerDetailGeneratedColumns      = []string{}
 )
 
 type (
-	// AnswerExtrasSlice is an alias for a slice of pointers to AnswerExtras.
-	// This should almost always be used instead of []AnswerExtras.
-	AnswerExtrasSlice []*AnswerExtras
-	// AnswerExtrasHook is the signature for custom AnswerExtras hook methods
-	AnswerExtrasHook func(context.Context, boil.ContextExecutor, *AnswerExtras) error
+	// AnswerDetailSlice is an alias for a slice of pointers to AnswerDetail.
+	// This should almost always be used instead of []AnswerDetail.
+	AnswerDetailSlice []*AnswerDetail
+	// AnswerDetailHook is the signature for custom AnswerDetail hook methods
+	AnswerDetailHook func(context.Context, boil.ContextExecutor, *AnswerDetail) error
 
-	answerExtrasQuery struct {
+	answerDetailQuery struct {
 		*queries.Query
 	}
 )
 
 // Cache for insert, update and upsert
 var (
-	answerExtrasType                 = reflect.TypeOf(&AnswerExtras{})
-	answerExtrasMapping              = queries.MakeStructMapping(answerExtrasType)
-	answerExtrasPrimaryKeyMapping, _ = queries.BindMapping(answerExtrasType, answerExtrasMapping, answerExtrasPrimaryKeyColumns)
-	answerExtrasInsertCacheMut       sync.RWMutex
-	answerExtrasInsertCache          = make(map[string]insertCache)
-	answerExtrasUpdateCacheMut       sync.RWMutex
-	answerExtrasUpdateCache          = make(map[string]updateCache)
-	answerExtrasUpsertCacheMut       sync.RWMutex
-	answerExtrasUpsertCache          = make(map[string]insertCache)
+	answerDetailType                 = reflect.TypeOf(&AnswerDetail{})
+	answerDetailMapping              = queries.MakeStructMapping(answerDetailType)
+	answerDetailPrimaryKeyMapping, _ = queries.BindMapping(answerDetailType, answerDetailMapping, answerDetailPrimaryKeyColumns)
+	answerDetailInsertCacheMut       sync.RWMutex
+	answerDetailInsertCache          = make(map[string]insertCache)
+	answerDetailUpdateCacheMut       sync.RWMutex
+	answerDetailUpdateCache          = make(map[string]updateCache)
+	answerDetailUpsertCacheMut       sync.RWMutex
+	answerDetailUpsertCache          = make(map[string]insertCache)
 )
 
 var (
@@ -280,27 +287,27 @@ var (
 	_ = qmhelper.Where
 )
 
-var answerExtrasAfterSelectHooks []AnswerExtrasHook
+var answerDetailAfterSelectHooks []AnswerDetailHook
 
-var answerExtrasBeforeInsertHooks []AnswerExtrasHook
-var answerExtrasAfterInsertHooks []AnswerExtrasHook
+var answerDetailBeforeInsertHooks []AnswerDetailHook
+var answerDetailAfterInsertHooks []AnswerDetailHook
 
-var answerExtrasBeforeUpdateHooks []AnswerExtrasHook
-var answerExtrasAfterUpdateHooks []AnswerExtrasHook
+var answerDetailBeforeUpdateHooks []AnswerDetailHook
+var answerDetailAfterUpdateHooks []AnswerDetailHook
 
-var answerExtrasBeforeDeleteHooks []AnswerExtrasHook
-var answerExtrasAfterDeleteHooks []AnswerExtrasHook
+var answerDetailBeforeDeleteHooks []AnswerDetailHook
+var answerDetailAfterDeleteHooks []AnswerDetailHook
 
-var answerExtrasBeforeUpsertHooks []AnswerExtrasHook
-var answerExtrasAfterUpsertHooks []AnswerExtrasHook
+var answerDetailBeforeUpsertHooks []AnswerDetailHook
+var answerDetailAfterUpsertHooks []AnswerDetailHook
 
 // doAfterSelectHooks executes all "after Select" hooks.
-func (o *AnswerExtras) doAfterSelectHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *AnswerDetail) doAfterSelectHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range answerExtrasAfterSelectHooks {
+	for _, hook := range answerDetailAfterSelectHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -310,12 +317,12 @@ func (o *AnswerExtras) doAfterSelectHooks(ctx context.Context, exec boil.Context
 }
 
 // doBeforeInsertHooks executes all "before insert" hooks.
-func (o *AnswerExtras) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *AnswerDetail) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range answerExtrasBeforeInsertHooks {
+	for _, hook := range answerDetailBeforeInsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -325,12 +332,12 @@ func (o *AnswerExtras) doBeforeInsertHooks(ctx context.Context, exec boil.Contex
 }
 
 // doAfterInsertHooks executes all "after Insert" hooks.
-func (o *AnswerExtras) doAfterInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *AnswerDetail) doAfterInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range answerExtrasAfterInsertHooks {
+	for _, hook := range answerDetailAfterInsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -340,12 +347,12 @@ func (o *AnswerExtras) doAfterInsertHooks(ctx context.Context, exec boil.Context
 }
 
 // doBeforeUpdateHooks executes all "before Update" hooks.
-func (o *AnswerExtras) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *AnswerDetail) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range answerExtrasBeforeUpdateHooks {
+	for _, hook := range answerDetailBeforeUpdateHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -355,12 +362,12 @@ func (o *AnswerExtras) doBeforeUpdateHooks(ctx context.Context, exec boil.Contex
 }
 
 // doAfterUpdateHooks executes all "after Update" hooks.
-func (o *AnswerExtras) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *AnswerDetail) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range answerExtrasAfterUpdateHooks {
+	for _, hook := range answerDetailAfterUpdateHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -370,12 +377,12 @@ func (o *AnswerExtras) doAfterUpdateHooks(ctx context.Context, exec boil.Context
 }
 
 // doBeforeDeleteHooks executes all "before Delete" hooks.
-func (o *AnswerExtras) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *AnswerDetail) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range answerExtrasBeforeDeleteHooks {
+	for _, hook := range answerDetailBeforeDeleteHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -385,12 +392,12 @@ func (o *AnswerExtras) doBeforeDeleteHooks(ctx context.Context, exec boil.Contex
 }
 
 // doAfterDeleteHooks executes all "after Delete" hooks.
-func (o *AnswerExtras) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *AnswerDetail) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range answerExtrasAfterDeleteHooks {
+	for _, hook := range answerDetailAfterDeleteHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -400,12 +407,12 @@ func (o *AnswerExtras) doAfterDeleteHooks(ctx context.Context, exec boil.Context
 }
 
 // doBeforeUpsertHooks executes all "before Upsert" hooks.
-func (o *AnswerExtras) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *AnswerDetail) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range answerExtrasBeforeUpsertHooks {
+	for _, hook := range answerDetailBeforeUpsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -415,12 +422,12 @@ func (o *AnswerExtras) doBeforeUpsertHooks(ctx context.Context, exec boil.Contex
 }
 
 // doAfterUpsertHooks executes all "after Upsert" hooks.
-func (o *AnswerExtras) doAfterUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *AnswerDetail) doAfterUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range answerExtrasAfterUpsertHooks {
+	for _, hook := range answerDetailAfterUpsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -429,33 +436,33 @@ func (o *AnswerExtras) doAfterUpsertHooks(ctx context.Context, exec boil.Context
 	return nil
 }
 
-// AddAnswerExtrasHook registers your hook function for all future operations.
-func AddAnswerExtrasHook(hookPoint boil.HookPoint, answerExtrasHook AnswerExtrasHook) {
+// AddAnswerDetailHook registers your hook function for all future operations.
+func AddAnswerDetailHook(hookPoint boil.HookPoint, answerDetailHook AnswerDetailHook) {
 	switch hookPoint {
 	case boil.AfterSelectHook:
-		answerExtrasAfterSelectHooks = append(answerExtrasAfterSelectHooks, answerExtrasHook)
+		answerDetailAfterSelectHooks = append(answerDetailAfterSelectHooks, answerDetailHook)
 	case boil.BeforeInsertHook:
-		answerExtrasBeforeInsertHooks = append(answerExtrasBeforeInsertHooks, answerExtrasHook)
+		answerDetailBeforeInsertHooks = append(answerDetailBeforeInsertHooks, answerDetailHook)
 	case boil.AfterInsertHook:
-		answerExtrasAfterInsertHooks = append(answerExtrasAfterInsertHooks, answerExtrasHook)
+		answerDetailAfterInsertHooks = append(answerDetailAfterInsertHooks, answerDetailHook)
 	case boil.BeforeUpdateHook:
-		answerExtrasBeforeUpdateHooks = append(answerExtrasBeforeUpdateHooks, answerExtrasHook)
+		answerDetailBeforeUpdateHooks = append(answerDetailBeforeUpdateHooks, answerDetailHook)
 	case boil.AfterUpdateHook:
-		answerExtrasAfterUpdateHooks = append(answerExtrasAfterUpdateHooks, answerExtrasHook)
+		answerDetailAfterUpdateHooks = append(answerDetailAfterUpdateHooks, answerDetailHook)
 	case boil.BeforeDeleteHook:
-		answerExtrasBeforeDeleteHooks = append(answerExtrasBeforeDeleteHooks, answerExtrasHook)
+		answerDetailBeforeDeleteHooks = append(answerDetailBeforeDeleteHooks, answerDetailHook)
 	case boil.AfterDeleteHook:
-		answerExtrasAfterDeleteHooks = append(answerExtrasAfterDeleteHooks, answerExtrasHook)
+		answerDetailAfterDeleteHooks = append(answerDetailAfterDeleteHooks, answerDetailHook)
 	case boil.BeforeUpsertHook:
-		answerExtrasBeforeUpsertHooks = append(answerExtrasBeforeUpsertHooks, answerExtrasHook)
+		answerDetailBeforeUpsertHooks = append(answerDetailBeforeUpsertHooks, answerDetailHook)
 	case boil.AfterUpsertHook:
-		answerExtrasAfterUpsertHooks = append(answerExtrasAfterUpsertHooks, answerExtrasHook)
+		answerDetailAfterUpsertHooks = append(answerDetailAfterUpsertHooks, answerDetailHook)
 	}
 }
 
-// One returns a single answerExtras record from the query.
-func (q answerExtrasQuery) One(ctx context.Context, exec boil.ContextExecutor) (*AnswerExtras, error) {
-	o := &AnswerExtras{}
+// One returns a single answerDetail record from the query.
+func (q answerDetailQuery) One(ctx context.Context, exec boil.ContextExecutor) (*AnswerDetail, error) {
+	o := &AnswerDetail{}
 
 	queries.SetLimit(q.Query, 1)
 
@@ -464,7 +471,7 @@ func (q answerExtrasQuery) One(ctx context.Context, exec boil.ContextExecutor) (
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "models: failed to execute a one query for answer_extras")
+		return nil, errors.Wrap(err, "models: failed to execute a one query for answer_details")
 	}
 
 	if err := o.doAfterSelectHooks(ctx, exec); err != nil {
@@ -474,16 +481,16 @@ func (q answerExtrasQuery) One(ctx context.Context, exec boil.ContextExecutor) (
 	return o, nil
 }
 
-// All returns all AnswerExtras records from the query.
-func (q answerExtrasQuery) All(ctx context.Context, exec boil.ContextExecutor) (AnswerExtrasSlice, error) {
-	var o []*AnswerExtras
+// All returns all AnswerDetail records from the query.
+func (q answerDetailQuery) All(ctx context.Context, exec boil.ContextExecutor) (AnswerDetailSlice, error) {
+	var o []*AnswerDetail
 
 	err := q.Bind(ctx, exec, &o)
 	if err != nil {
-		return nil, errors.Wrap(err, "models: failed to assign all query results to AnswerExtras slice")
+		return nil, errors.Wrap(err, "models: failed to assign all query results to AnswerDetail slice")
 	}
 
-	if len(answerExtrasAfterSelectHooks) != 0 {
+	if len(answerDetailAfterSelectHooks) != 0 {
 		for _, obj := range o {
 			if err := obj.doAfterSelectHooks(ctx, exec); err != nil {
 				return o, err
@@ -494,8 +501,8 @@ func (q answerExtrasQuery) All(ctx context.Context, exec boil.ContextExecutor) (
 	return o, nil
 }
 
-// Count returns the count of all AnswerExtras records in the query.
-func (q answerExtrasQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+// Count returns the count of all AnswerDetail records in the query.
+func (q answerDetailQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	var count int64
 
 	queries.SetSelect(q.Query, nil)
@@ -503,14 +510,14 @@ func (q answerExtrasQuery) Count(ctx context.Context, exec boil.ContextExecutor)
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to count answer_extras rows")
+		return 0, errors.Wrap(err, "models: failed to count answer_details rows")
 	}
 
 	return count, nil
 }
 
 // Exists checks if the row exists in the table.
-func (q answerExtrasQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
+func (q answerDetailQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
 	var count int64
 
 	queries.SetSelect(q.Query, nil)
@@ -519,16 +526,16 @@ func (q answerExtrasQuery) Exists(ctx context.Context, exec boil.ContextExecutor
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return false, errors.Wrap(err, "models: failed to check if answer_extras exists")
+		return false, errors.Wrap(err, "models: failed to check if answer_details exists")
 	}
 
 	return count > 0, nil
 }
 
 // Answer pointed to by the foreign key.
-func (o *AnswerExtras) Answer(mods ...qm.QueryMod) answerQuery {
+func (o *AnswerDetail) Answer(mods ...qm.QueryMod) answerQuery {
 	queryMods := []qm.QueryMod{
-		qm.Where("\"answer_id\" = ?", o.AnswerID),
+		qm.Where("\"id\" = ?", o.AnswerID),
 	}
 
 	queryMods = append(queryMods, mods...)
@@ -538,28 +545,28 @@ func (o *AnswerExtras) Answer(mods ...qm.QueryMod) answerQuery {
 
 // LoadAnswer allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for an N-1 relationship.
-func (answerExtrasL) LoadAnswer(ctx context.Context, e boil.ContextExecutor, singular bool, maybeAnswerExtras interface{}, mods queries.Applicator) error {
-	var slice []*AnswerExtras
-	var object *AnswerExtras
+func (answerDetailL) LoadAnswer(ctx context.Context, e boil.ContextExecutor, singular bool, maybeAnswerDetail interface{}, mods queries.Applicator) error {
+	var slice []*AnswerDetail
+	var object *AnswerDetail
 
 	if singular {
 		var ok bool
-		object, ok = maybeAnswerExtras.(*AnswerExtras)
+		object, ok = maybeAnswerDetail.(*AnswerDetail)
 		if !ok {
-			object = new(AnswerExtras)
-			ok = queries.SetFromEmbeddedStruct(&object, &maybeAnswerExtras)
+			object = new(AnswerDetail)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeAnswerDetail)
 			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeAnswerExtras))
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeAnswerDetail))
 			}
 		}
 	} else {
-		s, ok := maybeAnswerExtras.(*[]*AnswerExtras)
+		s, ok := maybeAnswerDetail.(*[]*AnswerDetail)
 		if ok {
 			slice = *s
 		} else {
-			ok = queries.SetFromEmbeddedStruct(&slice, maybeAnswerExtras)
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeAnswerDetail)
 			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeAnswerExtras))
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeAnswerDetail))
 			}
 		}
 	}
@@ -567,7 +574,7 @@ func (answerExtrasL) LoadAnswer(ctx context.Context, e boil.ContextExecutor, sin
 	args := make([]interface{}, 0, 1)
 	if singular {
 		if object.R == nil {
-			object.R = &answerExtrasR{}
+			object.R = &answerDetailR{}
 		}
 		args = append(args, object.AnswerID)
 
@@ -575,7 +582,7 @@ func (answerExtrasL) LoadAnswer(ctx context.Context, e boil.ContextExecutor, sin
 	Outer:
 		for _, obj := range slice {
 			if obj.R == nil {
-				obj.R = &answerExtrasR{}
+				obj.R = &answerDetailR{}
 			}
 
 			for _, a := range args {
@@ -595,7 +602,7 @@ func (answerExtrasL) LoadAnswer(ctx context.Context, e boil.ContextExecutor, sin
 
 	query := NewQuery(
 		qm.From(`answers`),
-		qm.WhereIn(`answers.answer_id in ?`, args...),
+		qm.WhereIn(`answers.id in ?`, args...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -618,7 +625,7 @@ func (answerExtrasL) LoadAnswer(ctx context.Context, e boil.ContextExecutor, sin
 		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for answers")
 	}
 
-	if len(answerExtrasAfterSelectHooks) != 0 {
+	if len(answerDetailAfterSelectHooks) != 0 {
 		for _, obj := range resultSlice {
 			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
 				return err
@@ -636,18 +643,18 @@ func (answerExtrasL) LoadAnswer(ctx context.Context, e boil.ContextExecutor, sin
 		if foreign.R == nil {
 			foreign.R = &answerR{}
 		}
-		foreign.R.AnswerExtras = object
+		foreign.R.AnswerDetail = object
 		return nil
 	}
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if local.AnswerID == foreign.AnswerID {
+			if local.AnswerID == foreign.ID {
 				local.R.Answer = foreign
 				if foreign.R == nil {
 					foreign.R = &answerR{}
 				}
-				foreign.R.AnswerExtras = local
+				foreign.R.AnswerDetail = local
 				break
 			}
 		}
@@ -656,10 +663,10 @@ func (answerExtrasL) LoadAnswer(ctx context.Context, e boil.ContextExecutor, sin
 	return nil
 }
 
-// SetAnswer of the answerExtras to the related item.
+// SetAnswer of the answerDetail to the related item.
 // Sets o.R.Answer to related.
-// Adds o to related.R.AnswerExtras.
-func (o *AnswerExtras) SetAnswer(ctx context.Context, exec boil.ContextExecutor, insert bool, related *Answer) error {
+// Adds o to related.R.AnswerDetail.
+func (o *AnswerDetail) SetAnswer(ctx context.Context, exec boil.ContextExecutor, insert bool, related *Answer) error {
 	var err error
 	if insert {
 		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
@@ -668,11 +675,11 @@ func (o *AnswerExtras) SetAnswer(ctx context.Context, exec boil.ContextExecutor,
 	}
 
 	updateQuery := fmt.Sprintf(
-		"UPDATE \"answer_extras\" SET %s WHERE %s",
+		"UPDATE \"answer_details\" SET %s WHERE %s",
 		strmangle.SetParamNames("\"", "\"", 1, []string{"answer_id"}),
-		strmangle.WhereClause("\"", "\"", 2, answerExtrasPrimaryKeyColumns),
+		strmangle.WhereClause("\"", "\"", 2, answerDetailPrimaryKeyColumns),
 	)
-	values := []interface{}{related.AnswerID, o.AnswerID}
+	values := []interface{}{related.ID, o.ID}
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -683,9 +690,9 @@ func (o *AnswerExtras) SetAnswer(ctx context.Context, exec boil.ContextExecutor,
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	o.AnswerID = related.AnswerID
+	o.AnswerID = related.ID
 	if o.R == nil {
-		o.R = &answerExtrasR{
+		o.R = &answerDetailR{
 			Answer: related,
 		}
 	} else {
@@ -694,61 +701,61 @@ func (o *AnswerExtras) SetAnswer(ctx context.Context, exec boil.ContextExecutor,
 
 	if related.R == nil {
 		related.R = &answerR{
-			AnswerExtras: o,
+			AnswerDetail: o,
 		}
 	} else {
-		related.R.AnswerExtras = o
+		related.R.AnswerDetail = o
 	}
 
 	return nil
 }
 
-// AnswerExtras retrieves all the records using an executor.
-func AnswerExtras(mods ...qm.QueryMod) answerExtrasQuery {
-	mods = append(mods, qm.From("\"answer_extras\""))
+// AnswerDetails retrieves all the records using an executor.
+func AnswerDetails(mods ...qm.QueryMod) answerDetailQuery {
+	mods = append(mods, qm.From("\"answer_details\""))
 	q := NewQuery(mods...)
 	if len(queries.GetSelect(q)) == 0 {
-		queries.SetSelect(q, []string{"\"answer_extras\".*"})
+		queries.SetSelect(q, []string{"\"answer_details\".*"})
 	}
 
-	return answerExtrasQuery{q}
+	return answerDetailQuery{q}
 }
 
-// FindAnswerExtras retrieves a single record by ID with an executor.
+// FindAnswerDetail retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindAnswerExtras(ctx context.Context, exec boil.ContextExecutor, answerID string, selectCols ...string) (*AnswerExtras, error) {
-	answerExtrasObj := &AnswerExtras{}
+func FindAnswerDetail(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*AnswerDetail, error) {
+	answerDetailObj := &AnswerDetail{}
 
 	sel := "*"
 	if len(selectCols) > 0 {
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from \"answer_extras\" where \"answer_id\"=$1", sel,
+		"select %s from \"answer_details\" where \"id\"=$1", sel,
 	)
 
-	q := queries.Raw(query, answerID)
+	q := queries.Raw(query, iD)
 
-	err := q.Bind(ctx, exec, answerExtrasObj)
+	err := q.Bind(ctx, exec, answerDetailObj)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "models: unable to select from answer_extras")
+		return nil, errors.Wrap(err, "models: unable to select from answer_details")
 	}
 
-	if err = answerExtrasObj.doAfterSelectHooks(ctx, exec); err != nil {
-		return answerExtrasObj, err
+	if err = answerDetailObj.doAfterSelectHooks(ctx, exec); err != nil {
+		return answerDetailObj, err
 	}
 
-	return answerExtrasObj, nil
+	return answerDetailObj, nil
 }
 
 // Insert a single record using an executor.
 // See boil.Columns.InsertColumnSet documentation to understand column list inference for inserts.
-func (o *AnswerExtras) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
+func (o *AnswerDetail) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
 	if o == nil {
-		return errors.New("models: no answer_extras provided for insertion")
+		return errors.New("models: no answer_details provided for insertion")
 	}
 
 	var err error
@@ -767,33 +774,33 @@ func (o *AnswerExtras) Insert(ctx context.Context, exec boil.ContextExecutor, co
 		return err
 	}
 
-	nzDefaults := queries.NonZeroDefaultSet(answerExtrasColumnsWithDefault, o)
+	nzDefaults := queries.NonZeroDefaultSet(answerDetailColumnsWithDefault, o)
 
 	key := makeCacheKey(columns, nzDefaults)
-	answerExtrasInsertCacheMut.RLock()
-	cache, cached := answerExtrasInsertCache[key]
-	answerExtrasInsertCacheMut.RUnlock()
+	answerDetailInsertCacheMut.RLock()
+	cache, cached := answerDetailInsertCache[key]
+	answerDetailInsertCacheMut.RUnlock()
 
 	if !cached {
 		wl, returnColumns := columns.InsertColumnSet(
-			answerExtrasAllColumns,
-			answerExtrasColumnsWithDefault,
-			answerExtrasColumnsWithoutDefault,
+			answerDetailAllColumns,
+			answerDetailColumnsWithDefault,
+			answerDetailColumnsWithoutDefault,
 			nzDefaults,
 		)
 
-		cache.valueMapping, err = queries.BindMapping(answerExtrasType, answerExtrasMapping, wl)
+		cache.valueMapping, err = queries.BindMapping(answerDetailType, answerDetailMapping, wl)
 		if err != nil {
 			return err
 		}
-		cache.retMapping, err = queries.BindMapping(answerExtrasType, answerExtrasMapping, returnColumns)
+		cache.retMapping, err = queries.BindMapping(answerDetailType, answerDetailMapping, returnColumns)
 		if err != nil {
 			return err
 		}
 		if len(wl) != 0 {
-			cache.query = fmt.Sprintf("INSERT INTO \"answer_extras\" (\"%s\") %%sVALUES (%s)%%s", strings.Join(wl, "\",\""), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
+			cache.query = fmt.Sprintf("INSERT INTO \"answer_details\" (\"%s\") %%sVALUES (%s)%%s", strings.Join(wl, "\",\""), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
 		} else {
-			cache.query = "INSERT INTO \"answer_extras\" %sDEFAULT VALUES%s"
+			cache.query = "INSERT INTO \"answer_details\" %sDEFAULT VALUES%s"
 		}
 
 		var queryOutput, queryReturning string
@@ -821,22 +828,22 @@ func (o *AnswerExtras) Insert(ctx context.Context, exec boil.ContextExecutor, co
 	}
 
 	if err != nil {
-		return errors.Wrap(err, "models: unable to insert into answer_extras")
+		return errors.Wrap(err, "models: unable to insert into answer_details")
 	}
 
 	if !cached {
-		answerExtrasInsertCacheMut.Lock()
-		answerExtrasInsertCache[key] = cache
-		answerExtrasInsertCacheMut.Unlock()
+		answerDetailInsertCacheMut.Lock()
+		answerDetailInsertCache[key] = cache
+		answerDetailInsertCacheMut.Unlock()
 	}
 
 	return o.doAfterInsertHooks(ctx, exec)
 }
 
-// Update uses an executor to update the AnswerExtras.
+// Update uses an executor to update the AnswerDetail.
 // See boil.Columns.UpdateColumnSet documentation to understand column list inference for updates.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
-func (o *AnswerExtras) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
+func (o *AnswerDetail) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
 	if !boil.TimestampsAreSkipped(ctx) {
 		currTime := time.Now().In(boil.GetLocation())
 
@@ -848,28 +855,28 @@ func (o *AnswerExtras) Update(ctx context.Context, exec boil.ContextExecutor, co
 		return 0, err
 	}
 	key := makeCacheKey(columns, nil)
-	answerExtrasUpdateCacheMut.RLock()
-	cache, cached := answerExtrasUpdateCache[key]
-	answerExtrasUpdateCacheMut.RUnlock()
+	answerDetailUpdateCacheMut.RLock()
+	cache, cached := answerDetailUpdateCache[key]
+	answerDetailUpdateCacheMut.RUnlock()
 
 	if !cached {
 		wl := columns.UpdateColumnSet(
-			answerExtrasAllColumns,
-			answerExtrasPrimaryKeyColumns,
+			answerDetailAllColumns,
+			answerDetailPrimaryKeyColumns,
 		)
 
 		if !columns.IsWhitelist() {
 			wl = strmangle.SetComplement(wl, []string{"created_at"})
 		}
 		if len(wl) == 0 {
-			return 0, errors.New("models: unable to update answer_extras, could not build whitelist")
+			return 0, errors.New("models: unable to update answer_details, could not build whitelist")
 		}
 
-		cache.query = fmt.Sprintf("UPDATE \"answer_extras\" SET %s WHERE %s",
+		cache.query = fmt.Sprintf("UPDATE \"answer_details\" SET %s WHERE %s",
 			strmangle.SetParamNames("\"", "\"", 1, wl),
-			strmangle.WhereClause("\"", "\"", len(wl)+1, answerExtrasPrimaryKeyColumns),
+			strmangle.WhereClause("\"", "\"", len(wl)+1, answerDetailPrimaryKeyColumns),
 		)
-		cache.valueMapping, err = queries.BindMapping(answerExtrasType, answerExtrasMapping, append(wl, answerExtrasPrimaryKeyColumns...))
+		cache.valueMapping, err = queries.BindMapping(answerDetailType, answerDetailMapping, append(wl, answerDetailPrimaryKeyColumns...))
 		if err != nil {
 			return 0, err
 		}
@@ -885,42 +892,42 @@ func (o *AnswerExtras) Update(ctx context.Context, exec boil.ContextExecutor, co
 	var result sql.Result
 	result, err = exec.ExecContext(ctx, cache.query, values...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to update answer_extras row")
+		return 0, errors.Wrap(err, "models: unable to update answer_details row")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by update for answer_extras")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by update for answer_details")
 	}
 
 	if !cached {
-		answerExtrasUpdateCacheMut.Lock()
-		answerExtrasUpdateCache[key] = cache
-		answerExtrasUpdateCacheMut.Unlock()
+		answerDetailUpdateCacheMut.Lock()
+		answerDetailUpdateCache[key] = cache
+		answerDetailUpdateCacheMut.Unlock()
 	}
 
 	return rowsAff, o.doAfterUpdateHooks(ctx, exec)
 }
 
 // UpdateAll updates all rows with the specified column values.
-func (q answerExtrasQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
+func (q answerDetailQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
 	queries.SetUpdate(q.Query, cols)
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to update all for answer_extras")
+		return 0, errors.Wrap(err, "models: unable to update all for answer_details")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to retrieve rows affected for answer_extras")
+		return 0, errors.Wrap(err, "models: unable to retrieve rows affected for answer_details")
 	}
 
 	return rowsAff, nil
 }
 
 // UpdateAll updates all rows with the specified column values, using an executor.
-func (o AnswerExtrasSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
+func (o AnswerDetailSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
 	ln := int64(len(o))
 	if ln == 0 {
 		return 0, nil
@@ -942,13 +949,13 @@ func (o AnswerExtrasSlice) UpdateAll(ctx context.Context, exec boil.ContextExecu
 
 	// Append all of the primary key values for each column
 	for _, obj := range o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), answerExtrasPrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), answerDetailPrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := fmt.Sprintf("UPDATE \"answer_extras\" SET %s WHERE %s",
+	sql := fmt.Sprintf("UPDATE \"answer_details\" SET %s WHERE %s",
 		strmangle.SetParamNames("\"", "\"", 1, colNames),
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), len(colNames)+1, answerExtrasPrimaryKeyColumns, len(o)))
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), len(colNames)+1, answerDetailPrimaryKeyColumns, len(o)))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -957,29 +964,29 @@ func (o AnswerExtrasSlice) UpdateAll(ctx context.Context, exec boil.ContextExecu
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to update all in answerExtras slice")
+		return 0, errors.Wrap(err, "models: unable to update all in answerDetail slice")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to retrieve rows affected all in update all answerExtras")
+		return 0, errors.Wrap(err, "models: unable to retrieve rows affected all in update all answerDetail")
 	}
 	return rowsAff, nil
 }
 
-// Delete deletes a single AnswerExtras record with an executor.
+// Delete deletes a single AnswerDetail record with an executor.
 // Delete will match against the primary key column to find the record to delete.
-func (o *AnswerExtras) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (o *AnswerDetail) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if o == nil {
-		return 0, errors.New("models: no AnswerExtras provided for delete")
+		return 0, errors.New("models: no AnswerDetail provided for delete")
 	}
 
 	if err := o.doBeforeDeleteHooks(ctx, exec); err != nil {
 		return 0, err
 	}
 
-	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), answerExtrasPrimaryKeyMapping)
-	sql := "DELETE FROM \"answer_extras\" WHERE \"answer_id\"=$1"
+	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), answerDetailPrimaryKeyMapping)
+	sql := "DELETE FROM \"answer_details\" WHERE \"id\"=$1"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -988,12 +995,12 @@ func (o *AnswerExtras) Delete(ctx context.Context, exec boil.ContextExecutor) (i
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to delete from answer_extras")
+		return 0, errors.Wrap(err, "models: unable to delete from answer_details")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by delete for answer_extras")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by delete for answer_details")
 	}
 
 	if err := o.doAfterDeleteHooks(ctx, exec); err != nil {
@@ -1004,33 +1011,33 @@ func (o *AnswerExtras) Delete(ctx context.Context, exec boil.ContextExecutor) (i
 }
 
 // DeleteAll deletes all matching rows.
-func (q answerExtrasQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (q answerDetailQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if q.Query == nil {
-		return 0, errors.New("models: no answerExtrasQuery provided for delete all")
+		return 0, errors.New("models: no answerDetailQuery provided for delete all")
 	}
 
 	queries.SetDelete(q.Query)
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to delete all from answer_extras")
+		return 0, errors.Wrap(err, "models: unable to delete all from answer_details")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for answer_extras")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for answer_details")
 	}
 
 	return rowsAff, nil
 }
 
 // DeleteAll deletes all rows in the slice, using an executor.
-func (o AnswerExtrasSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (o AnswerDetailSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if len(o) == 0 {
 		return 0, nil
 	}
 
-	if len(answerExtrasBeforeDeleteHooks) != 0 {
+	if len(answerDetailBeforeDeleteHooks) != 0 {
 		for _, obj := range o {
 			if err := obj.doBeforeDeleteHooks(ctx, exec); err != nil {
 				return 0, err
@@ -1040,12 +1047,12 @@ func (o AnswerExtrasSlice) DeleteAll(ctx context.Context, exec boil.ContextExecu
 
 	var args []interface{}
 	for _, obj := range o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), answerExtrasPrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), answerDetailPrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "DELETE FROM \"answer_extras\" WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, answerExtrasPrimaryKeyColumns, len(o))
+	sql := "DELETE FROM \"answer_details\" WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, answerDetailPrimaryKeyColumns, len(o))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1054,15 +1061,15 @@ func (o AnswerExtrasSlice) DeleteAll(ctx context.Context, exec boil.ContextExecu
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to delete all from answerExtras slice")
+		return 0, errors.Wrap(err, "models: unable to delete all from answerDetail slice")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for answer_extras")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for answer_details")
 	}
 
-	if len(answerExtrasAfterDeleteHooks) != 0 {
+	if len(answerDetailAfterDeleteHooks) != 0 {
 		for _, obj := range o {
 			if err := obj.doAfterDeleteHooks(ctx, exec); err != nil {
 				return 0, err
@@ -1075,8 +1082,8 @@ func (o AnswerExtrasSlice) DeleteAll(ctx context.Context, exec boil.ContextExecu
 
 // Reload refetches the object from the database
 // using the primary keys with an executor.
-func (o *AnswerExtras) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindAnswerExtras(ctx, exec, o.AnswerID)
+func (o *AnswerDetail) Reload(ctx context.Context, exec boil.ContextExecutor) error {
+	ret, err := FindAnswerDetail(ctx, exec, o.ID)
 	if err != nil {
 		return err
 	}
@@ -1087,26 +1094,26 @@ func (o *AnswerExtras) Reload(ctx context.Context, exec boil.ContextExecutor) er
 
 // ReloadAll refetches every row with matching primary key column values
 // and overwrites the original object slice with the newly updated slice.
-func (o *AnswerExtrasSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) error {
+func (o *AnswerDetailSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) error {
 	if o == nil || len(*o) == 0 {
 		return nil
 	}
 
-	slice := AnswerExtrasSlice{}
+	slice := AnswerDetailSlice{}
 	var args []interface{}
 	for _, obj := range *o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), answerExtrasPrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), answerDetailPrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "SELECT \"answer_extras\".* FROM \"answer_extras\" WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, answerExtrasPrimaryKeyColumns, len(*o))
+	sql := "SELECT \"answer_details\".* FROM \"answer_details\" WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, answerDetailPrimaryKeyColumns, len(*o))
 
 	q := queries.Raw(sql, args...)
 
 	err := q.Bind(ctx, exec, &slice)
 	if err != nil {
-		return errors.Wrap(err, "models: unable to reload all in AnswerExtrasSlice")
+		return errors.Wrap(err, "models: unable to reload all in AnswerDetailSlice")
 	}
 
 	*o = slice
@@ -1114,21 +1121,21 @@ func (o *AnswerExtrasSlice) ReloadAll(ctx context.Context, exec boil.ContextExec
 	return nil
 }
 
-// AnswerExtrasExists checks if the AnswerExtras row exists.
-func AnswerExtrasExists(ctx context.Context, exec boil.ContextExecutor, answerID string) (bool, error) {
+// AnswerDetailExists checks if the AnswerDetail row exists.
+func AnswerDetailExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from \"answer_extras\" where \"answer_id\"=$1 limit 1)"
+	sql := "select exists(select 1 from \"answer_details\" where \"id\"=$1 limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
 		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, answerID)
+		fmt.Fprintln(writer, iD)
 	}
-	row := exec.QueryRowContext(ctx, sql, answerID)
+	row := exec.QueryRowContext(ctx, sql, iD)
 
 	err := row.Scan(&exists)
 	if err != nil {
-		return false, errors.Wrap(err, "models: unable to check if answer_extras exists")
+		return false, errors.Wrap(err, "models: unable to check if answer_details exists")
 	}
 
 	return exists, nil
@@ -1136,9 +1143,9 @@ func AnswerExtrasExists(ctx context.Context, exec boil.ContextExecutor, answerID
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *AnswerExtras) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns) error {
+func (o *AnswerDetail) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
-		return errors.New("models: no answer_extras provided for upsert")
+		return errors.New("models: no answer_details provided for upsert")
 	}
 	if !boil.TimestampsAreSkipped(ctx) {
 		currTime := time.Now().In(boil.GetLocation())
@@ -1153,7 +1160,7 @@ func (o *AnswerExtras) Upsert(ctx context.Context, exec boil.ContextExecutor, up
 		return err
 	}
 
-	nzDefaults := queries.NonZeroDefaultSet(answerExtrasColumnsWithDefault, o)
+	nzDefaults := queries.NonZeroDefaultSet(answerDetailColumnsWithDefault, o)
 
 	// Build cache key in-line uglily - mysql vs psql problems
 	buf := strmangle.GetBuffer()
@@ -1183,41 +1190,41 @@ func (o *AnswerExtras) Upsert(ctx context.Context, exec boil.ContextExecutor, up
 	key := buf.String()
 	strmangle.PutBuffer(buf)
 
-	answerExtrasUpsertCacheMut.RLock()
-	cache, cached := answerExtrasUpsertCache[key]
-	answerExtrasUpsertCacheMut.RUnlock()
+	answerDetailUpsertCacheMut.RLock()
+	cache, cached := answerDetailUpsertCache[key]
+	answerDetailUpsertCacheMut.RUnlock()
 
 	var err error
 
 	if !cached {
 		insert, ret := insertColumns.InsertColumnSet(
-			answerExtrasAllColumns,
-			answerExtrasColumnsWithDefault,
-			answerExtrasColumnsWithoutDefault,
+			answerDetailAllColumns,
+			answerDetailColumnsWithDefault,
+			answerDetailColumnsWithoutDefault,
 			nzDefaults,
 		)
 		update := updateColumns.UpdateColumnSet(
-			answerExtrasAllColumns,
-			answerExtrasPrimaryKeyColumns,
+			answerDetailAllColumns,
+			answerDetailPrimaryKeyColumns,
 		)
 
 		if updateOnConflict && len(update) == 0 {
-			return errors.New("models: unable to upsert answer_extras, could not build update column list")
+			return errors.New("models: unable to upsert answer_details, could not build update column list")
 		}
 
 		conflict := conflictColumns
 		if len(conflict) == 0 {
-			conflict = make([]string, len(answerExtrasPrimaryKeyColumns))
-			copy(conflict, answerExtrasPrimaryKeyColumns)
+			conflict = make([]string, len(answerDetailPrimaryKeyColumns))
+			copy(conflict, answerDetailPrimaryKeyColumns)
 		}
-		cache.query = buildUpsertQueryCockroachDB(dialect, "\"answer_extras\"", updateOnConflict, ret, update, conflict, insert)
+		cache.query = buildUpsertQueryCockroachDB(dialect, "\"answer_details\"", updateOnConflict, ret, update, conflict, insert)
 
-		cache.valueMapping, err = queries.BindMapping(answerExtrasType, answerExtrasMapping, insert)
+		cache.valueMapping, err = queries.BindMapping(answerDetailType, answerDetailMapping, insert)
 		if err != nil {
 			return err
 		}
 		if len(ret) != 0 {
-			cache.retMapping, err = queries.BindMapping(answerExtrasType, answerExtrasMapping, ret)
+			cache.retMapping, err = queries.BindMapping(answerDetailType, answerDetailMapping, ret)
 			if err != nil {
 				return err
 			}
@@ -1245,13 +1252,13 @@ func (o *AnswerExtras) Upsert(ctx context.Context, exec boil.ContextExecutor, up
 		_, err = exec.ExecContext(ctx, cache.query, vals...)
 	}
 	if err != nil {
-		return errors.Wrap(err, "models: unable to upsert answer_extras")
+		return errors.Wrap(err, "models: unable to upsert answer_details")
 	}
 
 	if !cached {
-		answerExtrasUpsertCacheMut.Lock()
-		answerExtrasUpsertCache[key] = cache
-		answerExtrasUpsertCacheMut.Unlock()
+		answerDetailUpsertCacheMut.Lock()
+		answerDetailUpsertCache[key] = cache
+		answerDetailUpsertCacheMut.Unlock()
 	}
 
 	return o.doAfterUpsertHooks(ctx, exec)

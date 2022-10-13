@@ -23,74 +23,65 @@ import (
 
 // Answer is an object representing the database table.
 type Answer struct {
-	AnswerID     string    `boil:"answer_id" json:"answer_id" toml:"answer_id" yaml:"answer_id"`
-	AnswerTarget string    `boil:"answer_target" json:"answer_target" toml:"answer_target" yaml:"answer_target"`
-	AnswerType   string    `boil:"answer_type" json:"answer_type" toml:"answer_type" yaml:"answer_type"`
-	HasExtras    bool      `boil:"has_extras" json:"has_extras" toml:"has_extras" yaml:"has_extras"`
-	AnswerTTL    int64     `boil:"answer_ttl" json:"answer_ttl" toml:"answer_ttl" yaml:"answer_ttl"`
-	OwnerID      string    `boil:"owner_id" json:"owner_id" toml:"owner_id" yaml:"owner_id"`
-	RecordID     string    `boil:"record_id" json:"record_id" toml:"record_id" yaml:"record_id"`
-	CreatedAt    time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt    time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	ID         string    `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Target     string    `boil:"target" json:"target" toml:"target" yaml:"target"`
+	Type       string    `boil:"type" json:"type" toml:"type" yaml:"type"`
+	TTL        int64     `boil:"ttl" json:"ttl" toml:"ttl" yaml:"ttl"`
+	HasDetails bool      `boil:"has_details" json:"has_details" toml:"has_details" yaml:"has_details"`
+	OwnerID    string    `boil:"owner_id" json:"owner_id" toml:"owner_id" yaml:"owner_id"`
+	RecordID   string    `boil:"record_id" json:"record_id" toml:"record_id" yaml:"record_id"`
+	CreatedAt  time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt  time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
 	R *answerR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L answerL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var AnswerColumns = struct {
-	AnswerID     string
-	AnswerTarget string
-	AnswerType   string
-	HasExtras    string
-	AnswerTTL    string
-	OwnerID      string
-	RecordID     string
-	CreatedAt    string
-	UpdatedAt    string
+	ID         string
+	Target     string
+	Type       string
+	TTL        string
+	HasDetails string
+	OwnerID    string
+	RecordID   string
+	CreatedAt  string
+	UpdatedAt  string
 }{
-	AnswerID:     "answer_id",
-	AnswerTarget: "answer_target",
-	AnswerType:   "answer_type",
-	HasExtras:    "has_extras",
-	AnswerTTL:    "answer_ttl",
-	OwnerID:      "owner_id",
-	RecordID:     "record_id",
-	CreatedAt:    "created_at",
-	UpdatedAt:    "updated_at",
+	ID:         "id",
+	Target:     "target",
+	Type:       "type",
+	TTL:        "ttl",
+	HasDetails: "has_details",
+	OwnerID:    "owner_id",
+	RecordID:   "record_id",
+	CreatedAt:  "created_at",
+	UpdatedAt:  "updated_at",
 }
 
 var AnswerTableColumns = struct {
-	AnswerID     string
-	AnswerTarget string
-	AnswerType   string
-	HasExtras    string
-	AnswerTTL    string
-	OwnerID      string
-	RecordID     string
-	CreatedAt    string
-	UpdatedAt    string
+	ID         string
+	Target     string
+	Type       string
+	TTL        string
+	HasDetails string
+	OwnerID    string
+	RecordID   string
+	CreatedAt  string
+	UpdatedAt  string
 }{
-	AnswerID:     "answers.answer_id",
-	AnswerTarget: "answers.answer_target",
-	AnswerType:   "answers.answer_type",
-	HasExtras:    "answers.has_extras",
-	AnswerTTL:    "answers.answer_ttl",
-	OwnerID:      "answers.owner_id",
-	RecordID:     "answers.record_id",
-	CreatedAt:    "answers.created_at",
-	UpdatedAt:    "answers.updated_at",
+	ID:         "answers.id",
+	Target:     "answers.target",
+	Type:       "answers.type",
+	TTL:        "answers.ttl",
+	HasDetails: "answers.has_details",
+	OwnerID:    "answers.owner_id",
+	RecordID:   "answers.record_id",
+	CreatedAt:  "answers.created_at",
+	UpdatedAt:  "answers.updated_at",
 }
 
 // Generated where
-
-type whereHelperbool struct{ field string }
-
-func (w whereHelperbool) EQ(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperbool) NEQ(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperbool) LT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperbool) LTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperbool) GT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperbool) GTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
 
 type whereHelperint64 struct{ field string }
 
@@ -115,44 +106,53 @@ func (w whereHelperint64) NIN(slice []int64) qm.QueryMod {
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
 
+type whereHelperbool struct{ field string }
+
+func (w whereHelperbool) EQ(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperbool) NEQ(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
+func (w whereHelperbool) LT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperbool) LTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
+func (w whereHelperbool) GT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperbool) GTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
+
 var AnswerWhere = struct {
-	AnswerID     whereHelperstring
-	AnswerTarget whereHelperstring
-	AnswerType   whereHelperstring
-	HasExtras    whereHelperbool
-	AnswerTTL    whereHelperint64
-	OwnerID      whereHelperstring
-	RecordID     whereHelperstring
-	CreatedAt    whereHelpertime_Time
-	UpdatedAt    whereHelpertime_Time
+	ID         whereHelperstring
+	Target     whereHelperstring
+	Type       whereHelperstring
+	TTL        whereHelperint64
+	HasDetails whereHelperbool
+	OwnerID    whereHelperstring
+	RecordID   whereHelperstring
+	CreatedAt  whereHelpertime_Time
+	UpdatedAt  whereHelpertime_Time
 }{
-	AnswerID:     whereHelperstring{field: "\"answers\".\"answer_id\""},
-	AnswerTarget: whereHelperstring{field: "\"answers\".\"answer_target\""},
-	AnswerType:   whereHelperstring{field: "\"answers\".\"answer_type\""},
-	HasExtras:    whereHelperbool{field: "\"answers\".\"has_extras\""},
-	AnswerTTL:    whereHelperint64{field: "\"answers\".\"answer_ttl\""},
-	OwnerID:      whereHelperstring{field: "\"answers\".\"owner_id\""},
-	RecordID:     whereHelperstring{field: "\"answers\".\"record_id\""},
-	CreatedAt:    whereHelpertime_Time{field: "\"answers\".\"created_at\""},
-	UpdatedAt:    whereHelpertime_Time{field: "\"answers\".\"updated_at\""},
+	ID:         whereHelperstring{field: "\"answers\".\"id\""},
+	Target:     whereHelperstring{field: "\"answers\".\"target\""},
+	Type:       whereHelperstring{field: "\"answers\".\"type\""},
+	TTL:        whereHelperint64{field: "\"answers\".\"ttl\""},
+	HasDetails: whereHelperbool{field: "\"answers\".\"has_details\""},
+	OwnerID:    whereHelperstring{field: "\"answers\".\"owner_id\""},
+	RecordID:   whereHelperstring{field: "\"answers\".\"record_id\""},
+	CreatedAt:  whereHelpertime_Time{field: "\"answers\".\"created_at\""},
+	UpdatedAt:  whereHelpertime_Time{field: "\"answers\".\"updated_at\""},
 }
 
 // AnswerRels is where relationship names are stored.
 var AnswerRels = struct {
 	Record       string
 	Owner        string
-	AnswerExtras string
+	AnswerDetail string
 }{
 	Record:       "Record",
 	Owner:        "Owner",
-	AnswerExtras: "AnswerExtras",
+	AnswerDetail: "AnswerDetail",
 }
 
 // answerR is where relationships are stored.
 type answerR struct {
 	Record       *Record       `boil:"Record" json:"Record" toml:"Record" yaml:"Record"`
 	Owner        *Owner        `boil:"Owner" json:"Owner" toml:"Owner" yaml:"Owner"`
-	AnswerExtras *AnswerExtras `boil:"AnswerExtras" json:"AnswerExtras" toml:"AnswerExtras" yaml:"AnswerExtras"`
+	AnswerDetail *AnswerDetail `boil:"AnswerDetail" json:"AnswerDetail" toml:"AnswerDetail" yaml:"AnswerDetail"`
 }
 
 // NewStruct creates a new relationship struct
@@ -174,21 +174,21 @@ func (r *answerR) GetOwner() *Owner {
 	return r.Owner
 }
 
-func (r *answerR) GetAnswerExtras() *AnswerExtras {
+func (r *answerR) GetAnswerDetail() *AnswerDetail {
 	if r == nil {
 		return nil
 	}
-	return r.AnswerExtras
+	return r.AnswerDetail
 }
 
 // answerL is where Load methods for each relationship are stored.
 type answerL struct{}
 
 var (
-	answerAllColumns            = []string{"answer_id", "answer_target", "answer_type", "has_extras", "answer_ttl", "owner_id", "record_id", "created_at", "updated_at"}
-	answerColumnsWithoutDefault = []string{"answer_target", "answer_type", "has_extras", "owner_id", "record_id"}
-	answerColumnsWithDefault    = []string{"answer_id", "answer_ttl", "created_at", "updated_at"}
-	answerPrimaryKeyColumns     = []string{"record_id", "owner_id", "answer_id", "answer_target", "answer_type"}
+	answerAllColumns            = []string{"id", "target", "type", "ttl", "has_details", "owner_id", "record_id", "created_at", "updated_at"}
+	answerColumnsWithoutDefault = []string{"target", "type", "has_details", "owner_id", "record_id", "created_at", "updated_at"}
+	answerColumnsWithDefault    = []string{"id", "ttl"}
+	answerPrimaryKeyColumns     = []string{"id"}
 	answerGeneratedColumns      = []string{}
 )
 
@@ -473,7 +473,7 @@ func (q answerQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (boo
 // Record pointed to by the foreign key.
 func (o *Answer) Record(mods ...qm.QueryMod) recordQuery {
 	queryMods := []qm.QueryMod{
-		qm.Where("\"record_id\" = ?", o.RecordID),
+		qm.Where("\"id\" = ?", o.RecordID),
 	}
 
 	queryMods = append(queryMods, mods...)
@@ -484,7 +484,7 @@ func (o *Answer) Record(mods ...qm.QueryMod) recordQuery {
 // Owner pointed to by the foreign key.
 func (o *Answer) Owner(mods ...qm.QueryMod) ownerQuery {
 	queryMods := []qm.QueryMod{
-		qm.Where("\"owner_id\" = ?", o.OwnerID),
+		qm.Where("\"id\" = ?", o.OwnerID),
 	}
 
 	queryMods = append(queryMods, mods...)
@@ -492,15 +492,15 @@ func (o *Answer) Owner(mods ...qm.QueryMod) ownerQuery {
 	return Owners(queryMods...)
 }
 
-// AnswerExtras pointed to by the foreign key.
-func (o *Answer) AnswerExtras(mods ...qm.QueryMod) answerExtrasQuery {
+// AnswerDetail pointed to by the foreign key.
+func (o *Answer) AnswerDetail(mods ...qm.QueryMod) answerDetailQuery {
 	queryMods := []qm.QueryMod{
-		qm.Where("\"answer_id\" = ?", o.AnswerID),
+		qm.Where("\"answer_id\" = ?", o.ID),
 	}
 
 	queryMods = append(queryMods, mods...)
 
-	return AnswerExtras(queryMods...)
+	return AnswerDetails(queryMods...)
 }
 
 // LoadRecord allows an eager lookup of values, cached into the
@@ -562,7 +562,7 @@ func (answerL) LoadRecord(ctx context.Context, e boil.ContextExecutor, singular 
 
 	query := NewQuery(
 		qm.From(`records`),
-		qm.WhereIn(`records.record_id in ?`, args...),
+		qm.WhereIn(`records.id in ?`, args...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -609,7 +609,7 @@ func (answerL) LoadRecord(ctx context.Context, e boil.ContextExecutor, singular 
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if local.RecordID == foreign.RecordID {
+			if local.RecordID == foreign.ID {
 				local.R.Record = foreign
 				if foreign.R == nil {
 					foreign.R = &recordR{}
@@ -682,7 +682,7 @@ func (answerL) LoadOwner(ctx context.Context, e boil.ContextExecutor, singular b
 
 	query := NewQuery(
 		qm.From(`owners`),
-		qm.WhereIn(`owners.owner_id in ?`, args...),
+		qm.WhereIn(`owners.id in ?`, args...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -729,7 +729,7 @@ func (answerL) LoadOwner(ctx context.Context, e boil.ContextExecutor, singular b
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if local.OwnerID == foreign.OwnerID {
+			if local.OwnerID == foreign.ID {
 				local.R.Owner = foreign
 				if foreign.R == nil {
 					foreign.R = &ownerR{}
@@ -743,9 +743,9 @@ func (answerL) LoadOwner(ctx context.Context, e boil.ContextExecutor, singular b
 	return nil
 }
 
-// LoadAnswerExtras allows an eager lookup of values, cached into the
+// LoadAnswerDetail allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for a 1-1 relationship.
-func (answerL) LoadAnswerExtras(ctx context.Context, e boil.ContextExecutor, singular bool, maybeAnswer interface{}, mods queries.Applicator) error {
+func (answerL) LoadAnswerDetail(ctx context.Context, e boil.ContextExecutor, singular bool, maybeAnswer interface{}, mods queries.Applicator) error {
 	var slice []*Answer
 	var object *Answer
 
@@ -776,7 +776,7 @@ func (answerL) LoadAnswerExtras(ctx context.Context, e boil.ContextExecutor, sin
 		if object.R == nil {
 			object.R = &answerR{}
 		}
-		args = append(args, object.AnswerID)
+		args = append(args, object.ID)
 	} else {
 	Outer:
 		for _, obj := range slice {
@@ -785,12 +785,12 @@ func (answerL) LoadAnswerExtras(ctx context.Context, e boil.ContextExecutor, sin
 			}
 
 			for _, a := range args {
-				if a == obj.AnswerID {
+				if a == obj.ID {
 					continue Outer
 				}
 			}
 
-			args = append(args, obj.AnswerID)
+			args = append(args, obj.ID)
 		}
 	}
 
@@ -799,8 +799,8 @@ func (answerL) LoadAnswerExtras(ctx context.Context, e boil.ContextExecutor, sin
 	}
 
 	query := NewQuery(
-		qm.From(`answer_extras`),
-		qm.WhereIn(`answer_extras.answer_id in ?`, args...),
+		qm.From(`answer_details`),
+		qm.WhereIn(`answer_details.answer_id in ?`, args...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -808,19 +808,19 @@ func (answerL) LoadAnswerExtras(ctx context.Context, e boil.ContextExecutor, sin
 
 	results, err := query.QueryContext(ctx, e)
 	if err != nil {
-		return errors.Wrap(err, "failed to eager load AnswerExtras")
+		return errors.Wrap(err, "failed to eager load AnswerDetail")
 	}
 
-	var resultSlice []*AnswerExtras
+	var resultSlice []*AnswerDetail
 	if err = queries.Bind(results, &resultSlice); err != nil {
-		return errors.Wrap(err, "failed to bind eager loaded slice AnswerExtras")
+		return errors.Wrap(err, "failed to bind eager loaded slice AnswerDetail")
 	}
 
 	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results of eager load for answer_extras")
+		return errors.Wrap(err, "failed to close results of eager load for answer_details")
 	}
 	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for answer_extras")
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for answer_details")
 	}
 
 	if len(answerAfterSelectHooks) != 0 {
@@ -837,19 +837,19 @@ func (answerL) LoadAnswerExtras(ctx context.Context, e boil.ContextExecutor, sin
 
 	if singular {
 		foreign := resultSlice[0]
-		object.R.AnswerExtras = foreign
+		object.R.AnswerDetail = foreign
 		if foreign.R == nil {
-			foreign.R = &answerExtrasR{}
+			foreign.R = &answerDetailR{}
 		}
 		foreign.R.Answer = object
 	}
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if local.AnswerID == foreign.AnswerID {
-				local.R.AnswerExtras = foreign
+			if local.ID == foreign.AnswerID {
+				local.R.AnswerDetail = foreign
 				if foreign.R == nil {
-					foreign.R = &answerExtrasR{}
+					foreign.R = &answerDetailR{}
 				}
 				foreign.R.Answer = local
 				break
@@ -876,7 +876,7 @@ func (o *Answer) SetRecord(ctx context.Context, exec boil.ContextExecutor, inser
 		strmangle.SetParamNames("\"", "\"", 1, []string{"record_id"}),
 		strmangle.WhereClause("\"", "\"", 2, answerPrimaryKeyColumns),
 	)
-	values := []interface{}{related.RecordID, o.RecordID, o.OwnerID, o.AnswerID, o.AnswerTarget, o.AnswerType}
+	values := []interface{}{related.ID, o.ID}
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -887,7 +887,7 @@ func (o *Answer) SetRecord(ctx context.Context, exec boil.ContextExecutor, inser
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	o.RecordID = related.RecordID
+	o.RecordID = related.ID
 	if o.R == nil {
 		o.R = &answerR{
 			Record: related,
@@ -923,7 +923,7 @@ func (o *Answer) SetOwner(ctx context.Context, exec boil.ContextExecutor, insert
 		strmangle.SetParamNames("\"", "\"", 1, []string{"owner_id"}),
 		strmangle.WhereClause("\"", "\"", 2, answerPrimaryKeyColumns),
 	)
-	values := []interface{}{related.OwnerID, o.RecordID, o.OwnerID, o.AnswerID, o.AnswerTarget, o.AnswerType}
+	values := []interface{}{related.ID, o.ID}
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -934,7 +934,7 @@ func (o *Answer) SetOwner(ctx context.Context, exec boil.ContextExecutor, insert
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	o.OwnerID = related.OwnerID
+	o.OwnerID = related.ID
 	if o.R == nil {
 		o.R = &answerR{
 			Owner: related,
@@ -954,25 +954,25 @@ func (o *Answer) SetOwner(ctx context.Context, exec boil.ContextExecutor, insert
 	return nil
 }
 
-// SetAnswerExtras of the answer to the related item.
-// Sets o.R.AnswerExtras to related.
+// SetAnswerDetail of the answer to the related item.
+// Sets o.R.AnswerDetail to related.
 // Adds o to related.R.Answer.
-func (o *Answer) SetAnswerExtras(ctx context.Context, exec boil.ContextExecutor, insert bool, related *AnswerExtras) error {
+func (o *Answer) SetAnswerDetail(ctx context.Context, exec boil.ContextExecutor, insert bool, related *AnswerDetail) error {
 	var err error
 
 	if insert {
-		related.AnswerID = o.AnswerID
+		related.AnswerID = o.ID
 
 		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
 			return errors.Wrap(err, "failed to insert into foreign table")
 		}
 	} else {
 		updateQuery := fmt.Sprintf(
-			"UPDATE \"answer_extras\" SET %s WHERE %s",
+			"UPDATE \"answer_details\" SET %s WHERE %s",
 			strmangle.SetParamNames("\"", "\"", 1, []string{"answer_id"}),
-			strmangle.WhereClause("\"", "\"", 2, answerExtrasPrimaryKeyColumns),
+			strmangle.WhereClause("\"", "\"", 2, answerDetailPrimaryKeyColumns),
 		)
-		values := []interface{}{o.AnswerID, related.AnswerID}
+		values := []interface{}{o.ID, related.ID}
 
 		if boil.IsDebug(ctx) {
 			writer := boil.DebugWriterFrom(ctx)
@@ -983,19 +983,19 @@ func (o *Answer) SetAnswerExtras(ctx context.Context, exec boil.ContextExecutor,
 			return errors.Wrap(err, "failed to update foreign table")
 		}
 
-		related.AnswerID = o.AnswerID
+		related.AnswerID = o.ID
 	}
 
 	if o.R == nil {
 		o.R = &answerR{
-			AnswerExtras: related,
+			AnswerDetail: related,
 		}
 	} else {
-		o.R.AnswerExtras = related
+		o.R.AnswerDetail = related
 	}
 
 	if related.R == nil {
-		related.R = &answerExtrasR{
+		related.R = &answerDetailR{
 			Answer: o,
 		}
 	} else {
@@ -1017,7 +1017,7 @@ func Answers(mods ...qm.QueryMod) answerQuery {
 
 // FindAnswer retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindAnswer(ctx context.Context, exec boil.ContextExecutor, recordID string, ownerID string, answerID string, answerTarget string, answerType string, selectCols ...string) (*Answer, error) {
+func FindAnswer(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*Answer, error) {
 	answerObj := &Answer{}
 
 	sel := "*"
@@ -1025,10 +1025,10 @@ func FindAnswer(ctx context.Context, exec boil.ContextExecutor, recordID string,
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from \"answers\" where \"record_id\"=$1 AND \"owner_id\"=$2 AND \"answer_id\"=$3 AND \"answer_target\"=$4 AND \"answer_type\"=$5", sel,
+		"select %s from \"answers\" where \"id\"=$1", sel,
 	)
 
-	q := queries.Raw(query, recordID, ownerID, answerID, answerTarget, answerType)
+	q := queries.Raw(query, iD)
 
 	err := q.Bind(ctx, exec, answerObj)
 	if err != nil {
@@ -1280,7 +1280,7 @@ func (o *Answer) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, 
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), answerPrimaryKeyMapping)
-	sql := "DELETE FROM \"answers\" WHERE \"record_id\"=$1 AND \"owner_id\"=$2 AND \"answer_id\"=$3 AND \"answer_target\"=$4 AND \"answer_type\"=$5"
+	sql := "DELETE FROM \"answers\" WHERE \"id\"=$1"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1377,7 +1377,7 @@ func (o AnswerSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (
 // Reload refetches the object from the database
 // using the primary keys with an executor.
 func (o *Answer) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindAnswer(ctx, exec, o.RecordID, o.OwnerID, o.AnswerID, o.AnswerTarget, o.AnswerType)
+	ret, err := FindAnswer(ctx, exec, o.ID)
 	if err != nil {
 		return err
 	}
@@ -1416,16 +1416,16 @@ func (o *AnswerSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) 
 }
 
 // AnswerExists checks if the Answer row exists.
-func AnswerExists(ctx context.Context, exec boil.ContextExecutor, recordID string, ownerID string, answerID string, answerTarget string, answerType string) (bool, error) {
+func AnswerExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from \"answers\" where \"record_id\"=$1 AND \"owner_id\"=$2 AND \"answer_id\"=$3 AND \"answer_target\"=$4 AND \"answer_type\"=$5 limit 1)"
+	sql := "select exists(select 1 from \"answers\" where \"id\"=$1 limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
 		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, recordID, ownerID, answerID, answerTarget, answerType)
+		fmt.Fprintln(writer, iD)
 	}
-	row := exec.QueryRowContext(ctx, sql, recordID, ownerID, answerID, answerTarget, answerType)
+	row := exec.QueryRowContext(ctx, sql, iD)
 
 	err := row.Scan(&exists)
 	if err != nil {

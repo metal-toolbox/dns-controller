@@ -197,7 +197,7 @@ func testOwnersExists(t *testing.T) {
 		t.Error(err)
 	}
 
-	e, err := OwnerExists(ctx, tx, o.OwnerName, o.OwnerOrigin, o.OwnerService)
+	e, err := OwnerExists(ctx, tx, o.ID)
 	if err != nil {
 		t.Errorf("Unable to check if Owner exists: %s", err)
 	}
@@ -223,7 +223,7 @@ func testOwnersFind(t *testing.T) {
 		t.Error(err)
 	}
 
-	ownerFound, err := FindOwner(ctx, tx, o.OwnerName, o.OwnerOrigin, o.OwnerService)
+	ownerFound, err := FindOwner(ctx, tx, o.ID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -567,8 +567,8 @@ func testOwnerToManyAnswers(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	b.OwnerID = a.OwnerID
-	c.OwnerID = a.OwnerID
+	b.OwnerID = a.ID
+	c.OwnerID = a.ID
 
 	if err = b.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
@@ -665,11 +665,11 @@ func testOwnerToManyAddOpAnswers(t *testing.T) {
 		first := x[0]
 		second := x[1]
 
-		if a.OwnerID != first.OwnerID {
-			t.Error("foreign key was wrong value", a.OwnerID, first.OwnerID)
+		if a.ID != first.OwnerID {
+			t.Error("foreign key was wrong value", a.ID, first.OwnerID)
 		}
-		if a.OwnerID != second.OwnerID {
-			t.Error("foreign key was wrong value", a.OwnerID, second.OwnerID)
+		if a.ID != second.OwnerID {
+			t.Error("foreign key was wrong value", a.ID, second.OwnerID)
 		}
 
 		if first.R.Owner != &a {
@@ -770,7 +770,7 @@ func testOwnersSelect(t *testing.T) {
 }
 
 var (
-	ownerDBTypes = map[string]string{`OwnerID`: `uuid`, `OwnerName`: `string`, `OwnerOrigin`: `string`, `OwnerService`: `string`, `CreatedAt`: `timestamptz`, `UpdatedAt`: `timestamptz`}
+	ownerDBTypes = map[string]string{`ID`: `uuid`, `Name`: `string`, `Origin`: `string`, `Service`: `string`, `CreatedAt`: `timestamptz`, `UpdatedAt`: `timestamptz`}
 	_            = bytes.MinRead
 )
 

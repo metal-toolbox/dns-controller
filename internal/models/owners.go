@@ -23,65 +23,65 @@ import (
 
 // Owner is an object representing the database table.
 type Owner struct {
-	OwnerID      string    `boil:"owner_id" json:"owner_id" toml:"owner_id" yaml:"owner_id"`
-	OwnerName    string    `boil:"owner_name" json:"owner_name" toml:"owner_name" yaml:"owner_name"`
-	OwnerOrigin  string    `boil:"owner_origin" json:"owner_origin" toml:"owner_origin" yaml:"owner_origin"`
-	OwnerService string    `boil:"owner_service" json:"owner_service" toml:"owner_service" yaml:"owner_service"`
-	CreatedAt    time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt    time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	ID        string    `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Name      string    `boil:"name" json:"name" toml:"name" yaml:"name"`
+	Origin    string    `boil:"origin" json:"origin" toml:"origin" yaml:"origin"`
+	Service   string    `boil:"service" json:"service" toml:"service" yaml:"service"`
+	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
 	R *ownerR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L ownerL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var OwnerColumns = struct {
-	OwnerID      string
-	OwnerName    string
-	OwnerOrigin  string
-	OwnerService string
-	CreatedAt    string
-	UpdatedAt    string
+	ID        string
+	Name      string
+	Origin    string
+	Service   string
+	CreatedAt string
+	UpdatedAt string
 }{
-	OwnerID:      "owner_id",
-	OwnerName:    "owner_name",
-	OwnerOrigin:  "owner_origin",
-	OwnerService: "owner_service",
-	CreatedAt:    "created_at",
-	UpdatedAt:    "updated_at",
+	ID:        "id",
+	Name:      "name",
+	Origin:    "origin",
+	Service:   "service",
+	CreatedAt: "created_at",
+	UpdatedAt: "updated_at",
 }
 
 var OwnerTableColumns = struct {
-	OwnerID      string
-	OwnerName    string
-	OwnerOrigin  string
-	OwnerService string
-	CreatedAt    string
-	UpdatedAt    string
+	ID        string
+	Name      string
+	Origin    string
+	Service   string
+	CreatedAt string
+	UpdatedAt string
 }{
-	OwnerID:      "owners.owner_id",
-	OwnerName:    "owners.owner_name",
-	OwnerOrigin:  "owners.owner_origin",
-	OwnerService: "owners.owner_service",
-	CreatedAt:    "owners.created_at",
-	UpdatedAt:    "owners.updated_at",
+	ID:        "owners.id",
+	Name:      "owners.name",
+	Origin:    "owners.origin",
+	Service:   "owners.service",
+	CreatedAt: "owners.created_at",
+	UpdatedAt: "owners.updated_at",
 }
 
 // Generated where
 
 var OwnerWhere = struct {
-	OwnerID      whereHelperstring
-	OwnerName    whereHelperstring
-	OwnerOrigin  whereHelperstring
-	OwnerService whereHelperstring
-	CreatedAt    whereHelpertime_Time
-	UpdatedAt    whereHelpertime_Time
+	ID        whereHelperstring
+	Name      whereHelperstring
+	Origin    whereHelperstring
+	Service   whereHelperstring
+	CreatedAt whereHelpertime_Time
+	UpdatedAt whereHelpertime_Time
 }{
-	OwnerID:      whereHelperstring{field: "\"owners\".\"owner_id\""},
-	OwnerName:    whereHelperstring{field: "\"owners\".\"owner_name\""},
-	OwnerOrigin:  whereHelperstring{field: "\"owners\".\"owner_origin\""},
-	OwnerService: whereHelperstring{field: "\"owners\".\"owner_service\""},
-	CreatedAt:    whereHelpertime_Time{field: "\"owners\".\"created_at\""},
-	UpdatedAt:    whereHelpertime_Time{field: "\"owners\".\"updated_at\""},
+	ID:        whereHelperstring{field: "\"owners\".\"id\""},
+	Name:      whereHelperstring{field: "\"owners\".\"name\""},
+	Origin:    whereHelperstring{field: "\"owners\".\"origin\""},
+	Service:   whereHelperstring{field: "\"owners\".\"service\""},
+	CreatedAt: whereHelpertime_Time{field: "\"owners\".\"created_at\""},
+	UpdatedAt: whereHelpertime_Time{field: "\"owners\".\"updated_at\""},
 }
 
 // OwnerRels is where relationship names are stored.
@@ -112,10 +112,10 @@ func (r *ownerR) GetAnswers() AnswerSlice {
 type ownerL struct{}
 
 var (
-	ownerAllColumns            = []string{"owner_id", "owner_name", "owner_origin", "owner_service", "created_at", "updated_at"}
-	ownerColumnsWithoutDefault = []string{"owner_name", "owner_origin", "owner_service"}
-	ownerColumnsWithDefault    = []string{"owner_id", "created_at", "updated_at"}
-	ownerPrimaryKeyColumns     = []string{"owner_name", "owner_origin", "owner_service"}
+	ownerAllColumns            = []string{"id", "name", "origin", "service", "created_at", "updated_at"}
+	ownerColumnsWithoutDefault = []string{"name", "origin", "service", "created_at", "updated_at"}
+	ownerColumnsWithDefault    = []string{"id"}
+	ownerPrimaryKeyColumns     = []string{"id"}
 	ownerGeneratedColumns      = []string{}
 )
 
@@ -405,7 +405,7 @@ func (o *Owner) Answers(mods ...qm.QueryMod) answerQuery {
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("\"answers\".\"owner_id\"=?", o.OwnerID),
+		qm.Where("\"answers\".\"owner_id\"=?", o.ID),
 	)
 
 	return Answers(queryMods...)
@@ -444,7 +444,7 @@ func (ownerL) LoadAnswers(ctx context.Context, e boil.ContextExecutor, singular 
 		if object.R == nil {
 			object.R = &ownerR{}
 		}
-		args = append(args, object.OwnerID)
+		args = append(args, object.ID)
 	} else {
 	Outer:
 		for _, obj := range slice {
@@ -453,12 +453,12 @@ func (ownerL) LoadAnswers(ctx context.Context, e boil.ContextExecutor, singular 
 			}
 
 			for _, a := range args {
-				if a == obj.OwnerID {
+				if a == obj.ID {
 					continue Outer
 				}
 			}
 
-			args = append(args, obj.OwnerID)
+			args = append(args, obj.ID)
 		}
 	}
 
@@ -511,7 +511,7 @@ func (ownerL) LoadAnswers(ctx context.Context, e boil.ContextExecutor, singular 
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.OwnerID == foreign.OwnerID {
+			if local.ID == foreign.OwnerID {
 				local.R.Answers = append(local.R.Answers, foreign)
 				if foreign.R == nil {
 					foreign.R = &answerR{}
@@ -533,7 +533,7 @@ func (o *Owner) AddAnswers(ctx context.Context, exec boil.ContextExecutor, inser
 	var err error
 	for _, rel := range related {
 		if insert {
-			rel.OwnerID = o.OwnerID
+			rel.OwnerID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
@@ -543,7 +543,7 @@ func (o *Owner) AddAnswers(ctx context.Context, exec boil.ContextExecutor, inser
 				strmangle.SetParamNames("\"", "\"", 1, []string{"owner_id"}),
 				strmangle.WhereClause("\"", "\"", 2, answerPrimaryKeyColumns),
 			)
-			values := []interface{}{o.OwnerID, rel.RecordID, rel.OwnerID, rel.AnswerID, rel.AnswerTarget, rel.AnswerType}
+			values := []interface{}{o.ID, rel.ID}
 
 			if boil.IsDebug(ctx) {
 				writer := boil.DebugWriterFrom(ctx)
@@ -554,7 +554,7 @@ func (o *Owner) AddAnswers(ctx context.Context, exec boil.ContextExecutor, inser
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			rel.OwnerID = o.OwnerID
+			rel.OwnerID = o.ID
 		}
 	}
 
@@ -591,7 +591,7 @@ func Owners(mods ...qm.QueryMod) ownerQuery {
 
 // FindOwner retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindOwner(ctx context.Context, exec boil.ContextExecutor, ownerName string, ownerOrigin string, ownerService string, selectCols ...string) (*Owner, error) {
+func FindOwner(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*Owner, error) {
 	ownerObj := &Owner{}
 
 	sel := "*"
@@ -599,10 +599,10 @@ func FindOwner(ctx context.Context, exec boil.ContextExecutor, ownerName string,
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from \"owners\" where \"owner_name\"=$1 AND \"owner_origin\"=$2 AND \"owner_service\"=$3", sel,
+		"select %s from \"owners\" where \"id\"=$1", sel,
 	)
 
-	q := queries.Raw(query, ownerName, ownerOrigin, ownerService)
+	q := queries.Raw(query, iD)
 
 	err := q.Bind(ctx, exec, ownerObj)
 	if err != nil {
@@ -854,7 +854,7 @@ func (o *Owner) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, e
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), ownerPrimaryKeyMapping)
-	sql := "DELETE FROM \"owners\" WHERE \"owner_name\"=$1 AND \"owner_origin\"=$2 AND \"owner_service\"=$3"
+	sql := "DELETE FROM \"owners\" WHERE \"id\"=$1"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -951,7 +951,7 @@ func (o OwnerSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (i
 // Reload refetches the object from the database
 // using the primary keys with an executor.
 func (o *Owner) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindOwner(ctx, exec, o.OwnerName, o.OwnerOrigin, o.OwnerService)
+	ret, err := FindOwner(ctx, exec, o.ID)
 	if err != nil {
 		return err
 	}
@@ -990,16 +990,16 @@ func (o *OwnerSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) e
 }
 
 // OwnerExists checks if the Owner row exists.
-func OwnerExists(ctx context.Context, exec boil.ContextExecutor, ownerName string, ownerOrigin string, ownerService string) (bool, error) {
+func OwnerExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from \"owners\" where \"owner_name\"=$1 AND \"owner_origin\"=$2 AND \"owner_service\"=$3 limit 1)"
+	sql := "select exists(select 1 from \"owners\" where \"id\"=$1 limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
 		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, ownerName, ownerOrigin, ownerService)
+		fmt.Fprintln(writer, iD)
 	}
-	row := exec.QueryRowContext(ctx, sql, ownerName, ownerOrigin, ownerService)
+	row := exec.QueryRowContext(ctx, sql, iD)
 
 	err := row.Scan(&exists)
 	if err != nil {

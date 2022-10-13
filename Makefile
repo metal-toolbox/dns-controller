@@ -12,7 +12,7 @@ test: | unit-test integration-test
 
 integration-test: test-database
 	@echo Running integration tests...
-	@DNS_CONTROLLER_DB_URI="${TEST_URI}" go test -cover -tags testtools,integration -p 1 ./...
+	@DNSCONTROLLER_DB_URI="${TEST_URI}" go test -cover -tags testtools,integration -p 1 ./...
 
 unit-test: | lint
 	@echo Running unit tests...
@@ -20,7 +20,7 @@ unit-test: | lint
 
 coverage: | test-database
 	@echo Generating coverage report...
-	@DNS_CONTROLLER_DB_URI="${TEST_URI}" go test ./... -race -coverprofile=coverage.out -covermode=atomic -tags testtools -p 1
+	@DNSCONTROLLER_DB_URI="${TEST_URI}" go test ./... -race -coverprofile=coverage.out -covermode=atomic -tags testtools -p 1
 	@go tool cover -func=coverage.out
 	@go tool cover -html=coverage.out
 
@@ -52,10 +52,10 @@ docker-clean:
 dev-database: | vendor
 	@cockroach sql --insecure -e "drop database if exists ${DEV_DB}"
 	@cockroach sql --insecure -e "create database ${DEV_DB}"
-	@DNS_CONTROLLER_DB_URI="${DEV_URI}" go run main.go migrate up
+	@DNSCONTROLLER_DB_URI="${DEV_URI}" go run main.go migrate up
 
 test-database: | vendor
 	@cockroach sql --insecure -e "drop database if exists ${TEST_DB}"
 	@cockroach sql --insecure -e "create database ${TEST_DB}"
-	@DNS_CONTROLLER_DB_URI="${TEST_URI}" go run main.go migrate up
+	@DNSCONTROLLER_DB_URI="${TEST_URI}" go run main.go migrate up
 	@cockroach sql --insecure -e "use ${TEST_DB};"

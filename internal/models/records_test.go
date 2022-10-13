@@ -197,7 +197,7 @@ func testRecordsExists(t *testing.T) {
 		t.Error(err)
 	}
 
-	e, err := RecordExists(ctx, tx, o.Record, o.RecordType)
+	e, err := RecordExists(ctx, tx, o.ID)
 	if err != nil {
 		t.Errorf("Unable to check if Record exists: %s", err)
 	}
@@ -223,7 +223,7 @@ func testRecordsFind(t *testing.T) {
 		t.Error(err)
 	}
 
-	recordFound, err := FindRecord(ctx, tx, o.Record, o.RecordType)
+	recordFound, err := FindRecord(ctx, tx, o.ID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -567,8 +567,8 @@ func testRecordToManyAnswers(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	b.RecordID = a.RecordID
-	c.RecordID = a.RecordID
+	b.RecordID = a.ID
+	c.RecordID = a.ID
 
 	if err = b.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
@@ -665,11 +665,11 @@ func testRecordToManyAddOpAnswers(t *testing.T) {
 		first := x[0]
 		second := x[1]
 
-		if a.RecordID != first.RecordID {
-			t.Error("foreign key was wrong value", a.RecordID, first.RecordID)
+		if a.ID != first.RecordID {
+			t.Error("foreign key was wrong value", a.ID, first.RecordID)
 		}
-		if a.RecordID != second.RecordID {
-			t.Error("foreign key was wrong value", a.RecordID, second.RecordID)
+		if a.ID != second.RecordID {
+			t.Error("foreign key was wrong value", a.ID, second.RecordID)
 		}
 
 		if first.R.Record != &a {
@@ -770,7 +770,7 @@ func testRecordsSelect(t *testing.T) {
 }
 
 var (
-	recordDBTypes = map[string]string{`RecordID`: `uuid`, `Record`: `string`, `RecordType`: `string`, `CreatedAt`: `timestamptz`, `UpdatedAt`: `timestamptz`}
+	recordDBTypes = map[string]string{`ID`: `uuid`, `Record`: `string`, `RecordType`: `string`, `CreatedAt`: `timestamptz`, `UpdatedAt`: `timestamptz`}
 	_             = bytes.MinRead
 )
 

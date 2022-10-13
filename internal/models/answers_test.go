@@ -197,7 +197,7 @@ func testAnswersExists(t *testing.T) {
 		t.Error(err)
 	}
 
-	e, err := AnswerExists(ctx, tx, o.RecordID, o.OwnerID, o.AnswerID, o.AnswerTarget, o.AnswerType)
+	e, err := AnswerExists(ctx, tx, o.ID)
 	if err != nil {
 		t.Errorf("Unable to check if Answer exists: %s", err)
 	}
@@ -223,7 +223,7 @@ func testAnswersFind(t *testing.T) {
 		t.Error(err)
 	}
 
-	answerFound, err := FindAnswer(ctx, tx, o.RecordID, o.OwnerID, o.AnswerID, o.AnswerTarget, o.AnswerType)
+	answerFound, err := FindAnswer(ctx, tx, o.ID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -542,17 +542,17 @@ func testAnswersInsertWhitelist(t *testing.T) {
 	}
 }
 
-func testAnswerOneToOneAnswerExtrasUsingAnswerExtras(t *testing.T) {
+func testAnswerOneToOneAnswerDetailUsingAnswerDetail(t *testing.T) {
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var foreign AnswerExtras
+	var foreign AnswerDetail
 	var local Answer
 
 	seed := randomize.NewSeed()
-	if err := randomize.Struct(seed, &foreign, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	if err := randomize.Struct(seed, &foreign, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 	if err := randomize.Struct(seed, &local, answerDBTypes, true, answerColumnsWithDefault...); err != nil {
 		t.Errorf("Unable to randomize Answer struct: %s", err)
@@ -562,12 +562,12 @@ func testAnswerOneToOneAnswerExtrasUsingAnswerExtras(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	foreign.AnswerID = local.AnswerID
+	foreign.AnswerID = local.ID
 	if err := foreign.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
 	}
 
-	check, err := local.AnswerExtras().One(ctx, tx)
+	check, err := local.AnswerDetail().One(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -577,23 +577,23 @@ func testAnswerOneToOneAnswerExtrasUsingAnswerExtras(t *testing.T) {
 	}
 
 	slice := AnswerSlice{&local}
-	if err = local.L.LoadAnswerExtras(ctx, tx, false, (*[]*Answer)(&slice), nil); err != nil {
+	if err = local.L.LoadAnswerDetail(ctx, tx, false, (*[]*Answer)(&slice), nil); err != nil {
 		t.Fatal(err)
 	}
-	if local.R.AnswerExtras == nil {
+	if local.R.AnswerDetail == nil {
 		t.Error("struct should have been eager loaded")
 	}
 
-	local.R.AnswerExtras = nil
-	if err = local.L.LoadAnswerExtras(ctx, tx, true, &local, nil); err != nil {
+	local.R.AnswerDetail = nil
+	if err = local.L.LoadAnswerDetail(ctx, tx, true, &local, nil); err != nil {
 		t.Fatal(err)
 	}
-	if local.R.AnswerExtras == nil {
+	if local.R.AnswerDetail == nil {
 		t.Error("struct should have been eager loaded")
 	}
 }
 
-func testAnswerOneToOneSetOpAnswerExtrasUsingAnswerExtras(t *testing.T) {
+func testAnswerOneToOneSetOpAnswerDetailUsingAnswerDetail(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
@@ -601,16 +601,16 @@ func testAnswerOneToOneSetOpAnswerExtrasUsingAnswerExtras(t *testing.T) {
 	defer func() { _ = tx.Rollback() }()
 
 	var a Answer
-	var b, c AnswerExtras
+	var b, c AnswerDetail
 
 	seed := randomize.NewSeed()
 	if err = randomize.Struct(seed, &a, answerDBTypes, false, strmangle.SetComplement(answerPrimaryKeyColumns, answerColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	if err = randomize.Struct(seed, &b, answerExtrasDBTypes, false, strmangle.SetComplement(answerExtrasPrimaryKeyColumns, answerExtrasColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &b, answerDetailDBTypes, false, strmangle.SetComplement(answerDetailPrimaryKeyColumns, answerDetailColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	if err = randomize.Struct(seed, &c, answerExtrasDBTypes, false, strmangle.SetComplement(answerExtrasPrimaryKeyColumns, answerExtrasColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &c, answerDetailDBTypes, false, strmangle.SetComplement(answerDetailPrimaryKeyColumns, answerDetailColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
 
@@ -621,31 +621,32 @@ func testAnswerOneToOneSetOpAnswerExtrasUsingAnswerExtras(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	for i, x := range []*AnswerExtras{&b, &c} {
-		err = a.SetAnswerExtras(ctx, tx, i != 0, x)
+	for i, x := range []*AnswerDetail{&b, &c} {
+		err = a.SetAnswerDetail(ctx, tx, i != 0, x)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if a.R.AnswerExtras != x {
+		if a.R.AnswerDetail != x {
 			t.Error("relationship struct not set to correct value")
 		}
 		if x.R.Answer != &a {
 			t.Error("failed to append to foreign relationship struct")
 		}
 
-		if a.AnswerID != x.AnswerID {
-			t.Error("foreign key was wrong value", a.AnswerID)
+		if a.ID != x.AnswerID {
+			t.Error("foreign key was wrong value", a.ID)
 		}
 
-		if exists, err := AnswerExtrasExists(ctx, tx, x.AnswerID); err != nil {
-			t.Fatal(err)
-		} else if !exists {
-			t.Error("want 'x' to exist")
+		zero := reflect.Zero(reflect.TypeOf(x.AnswerID))
+		reflect.Indirect(reflect.ValueOf(&x.AnswerID)).Set(zero)
+
+		if err = x.Reload(ctx, tx); err != nil {
+			t.Fatal("failed to reload", err)
 		}
 
-		if a.AnswerID != x.AnswerID {
-			t.Error("foreign key was wrong value", a.AnswerID, x.AnswerID)
+		if a.ID != x.AnswerID {
+			t.Error("foreign key was wrong value", a.ID, x.AnswerID)
 		}
 
 		if _, err = x.Delete(ctx, tx); err != nil {
@@ -674,7 +675,7 @@ func testAnswerToOneRecordUsingRecord(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	local.RecordID = foreign.RecordID
+	local.RecordID = foreign.ID
 	if err := local.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
 	}
@@ -684,8 +685,8 @@ func testAnswerToOneRecordUsingRecord(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if check.RecordID != foreign.RecordID {
-		t.Errorf("want: %v, got %v", foreign.RecordID, check.RecordID)
+	if check.ID != foreign.ID {
+		t.Errorf("want: %v, got %v", foreign.ID, check.ID)
 	}
 
 	slice := AnswerSlice{&local}
@@ -725,7 +726,7 @@ func testAnswerToOneOwnerUsingOwner(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	local.OwnerID = foreign.OwnerID
+	local.OwnerID = foreign.ID
 	if err := local.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
 	}
@@ -735,8 +736,8 @@ func testAnswerToOneOwnerUsingOwner(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if check.OwnerID != foreign.OwnerID {
-		t.Errorf("want: %v, got %v", foreign.OwnerID, check.OwnerID)
+	if check.ID != foreign.ID {
+		t.Errorf("want: %v, got %v", foreign.ID, check.ID)
 	}
 
 	slice := AnswerSlice{&local}
@@ -797,16 +798,20 @@ func testAnswerToOneSetOpRecordUsingRecord(t *testing.T) {
 		if x.R.Answers[0] != &a {
 			t.Error("failed to append to foreign relationship struct")
 		}
-		if a.RecordID != x.RecordID {
+		if a.RecordID != x.ID {
 			t.Error("foreign key was wrong value", a.RecordID)
 		}
 
-		if exists, err := AnswerExists(ctx, tx, a.RecordID, a.OwnerID, a.AnswerID, a.AnswerTarget, a.AnswerType); err != nil {
-			t.Fatal(err)
-		} else if !exists {
-			t.Error("want 'a' to exist")
+		zero := reflect.Zero(reflect.TypeOf(a.RecordID))
+		reflect.Indirect(reflect.ValueOf(&a.RecordID)).Set(zero)
+
+		if err = a.Reload(ctx, tx); err != nil {
+			t.Fatal("failed to reload", err)
 		}
 
+		if a.RecordID != x.ID {
+			t.Error("foreign key was wrong value", a.RecordID, x.ID)
+		}
 	}
 }
 func testAnswerToOneSetOpOwnerUsingOwner(t *testing.T) {
@@ -850,16 +855,20 @@ func testAnswerToOneSetOpOwnerUsingOwner(t *testing.T) {
 		if x.R.Answers[0] != &a {
 			t.Error("failed to append to foreign relationship struct")
 		}
-		if a.OwnerID != x.OwnerID {
+		if a.OwnerID != x.ID {
 			t.Error("foreign key was wrong value", a.OwnerID)
 		}
 
-		if exists, err := AnswerExists(ctx, tx, a.RecordID, a.OwnerID, a.AnswerID, a.AnswerTarget, a.AnswerType); err != nil {
-			t.Fatal(err)
-		} else if !exists {
-			t.Error("want 'a' to exist")
+		zero := reflect.Zero(reflect.TypeOf(a.OwnerID))
+		reflect.Indirect(reflect.ValueOf(&a.OwnerID)).Set(zero)
+
+		if err = a.Reload(ctx, tx); err != nil {
+			t.Fatal("failed to reload", err)
 		}
 
+		if a.OwnerID != x.ID {
+			t.Error("foreign key was wrong value", a.OwnerID, x.ID)
+		}
 	}
 }
 
@@ -937,7 +946,7 @@ func testAnswersSelect(t *testing.T) {
 }
 
 var (
-	answerDBTypes = map[string]string{`AnswerID`: `uuid`, `AnswerTarget`: `string`, `AnswerType`: `string`, `HasExtras`: `bool`, `AnswerTTL`: `int8`, `OwnerID`: `uuid`, `RecordID`: `uuid`, `CreatedAt`: `timestamptz`, `UpdatedAt`: `timestamptz`}
+	answerDBTypes = map[string]string{`ID`: `uuid`, `Target`: `string`, `Type`: `string`, `TTL`: `int8`, `HasDetails`: `bool`, `OwnerID`: `uuid`, `RecordID`: `uuid`, `CreatedAt`: `timestamptz`, `UpdatedAt`: `timestamptz`}
 	_             = bytes.MinRead
 )
 

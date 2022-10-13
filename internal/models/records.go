@@ -23,7 +23,7 @@ import (
 
 // Record is an object representing the database table.
 type Record struct {
-	RecordID   string    `boil:"record_id" json:"record_id" toml:"record_id" yaml:"record_id"`
+	ID         string    `boil:"id" json:"id" toml:"id" yaml:"id"`
 	Record     string    `boil:"record" json:"record" toml:"record" yaml:"record"`
 	RecordType string    `boil:"record_type" json:"record_type" toml:"record_type" yaml:"record_type"`
 	CreatedAt  time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
@@ -34,13 +34,13 @@ type Record struct {
 }
 
 var RecordColumns = struct {
-	RecordID   string
+	ID         string
 	Record     string
 	RecordType string
 	CreatedAt  string
 	UpdatedAt  string
 }{
-	RecordID:   "record_id",
+	ID:         "id",
 	Record:     "record",
 	RecordType: "record_type",
 	CreatedAt:  "created_at",
@@ -48,13 +48,13 @@ var RecordColumns = struct {
 }
 
 var RecordTableColumns = struct {
-	RecordID   string
+	ID         string
 	Record     string
 	RecordType string
 	CreatedAt  string
 	UpdatedAt  string
 }{
-	RecordID:   "records.record_id",
+	ID:         "records.id",
 	Record:     "records.record",
 	RecordType: "records.record_type",
 	CreatedAt:  "records.created_at",
@@ -64,13 +64,13 @@ var RecordTableColumns = struct {
 // Generated where
 
 var RecordWhere = struct {
-	RecordID   whereHelperstring
+	ID         whereHelperstring
 	Record     whereHelperstring
 	RecordType whereHelperstring
 	CreatedAt  whereHelpertime_Time
 	UpdatedAt  whereHelpertime_Time
 }{
-	RecordID:   whereHelperstring{field: "\"records\".\"record_id\""},
+	ID:         whereHelperstring{field: "\"records\".\"id\""},
 	Record:     whereHelperstring{field: "\"records\".\"record\""},
 	RecordType: whereHelperstring{field: "\"records\".\"record_type\""},
 	CreatedAt:  whereHelpertime_Time{field: "\"records\".\"created_at\""},
@@ -105,10 +105,10 @@ func (r *recordR) GetAnswers() AnswerSlice {
 type recordL struct{}
 
 var (
-	recordAllColumns            = []string{"record_id", "record", "record_type", "created_at", "updated_at"}
-	recordColumnsWithoutDefault = []string{"record", "record_type"}
-	recordColumnsWithDefault    = []string{"record_id", "created_at", "updated_at"}
-	recordPrimaryKeyColumns     = []string{"record", "record_type"}
+	recordAllColumns            = []string{"id", "record", "record_type", "created_at", "updated_at"}
+	recordColumnsWithoutDefault = []string{"record", "record_type", "created_at", "updated_at"}
+	recordColumnsWithDefault    = []string{"id"}
+	recordPrimaryKeyColumns     = []string{"id"}
 	recordGeneratedColumns      = []string{}
 )
 
@@ -398,7 +398,7 @@ func (o *Record) Answers(mods ...qm.QueryMod) answerQuery {
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("\"answers\".\"record_id\"=?", o.RecordID),
+		qm.Where("\"answers\".\"record_id\"=?", o.ID),
 	)
 
 	return Answers(queryMods...)
@@ -437,7 +437,7 @@ func (recordL) LoadAnswers(ctx context.Context, e boil.ContextExecutor, singular
 		if object.R == nil {
 			object.R = &recordR{}
 		}
-		args = append(args, object.RecordID)
+		args = append(args, object.ID)
 	} else {
 	Outer:
 		for _, obj := range slice {
@@ -446,12 +446,12 @@ func (recordL) LoadAnswers(ctx context.Context, e boil.ContextExecutor, singular
 			}
 
 			for _, a := range args {
-				if a == obj.RecordID {
+				if a == obj.ID {
 					continue Outer
 				}
 			}
 
-			args = append(args, obj.RecordID)
+			args = append(args, obj.ID)
 		}
 	}
 
@@ -504,7 +504,7 @@ func (recordL) LoadAnswers(ctx context.Context, e boil.ContextExecutor, singular
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.RecordID == foreign.RecordID {
+			if local.ID == foreign.RecordID {
 				local.R.Answers = append(local.R.Answers, foreign)
 				if foreign.R == nil {
 					foreign.R = &answerR{}
@@ -526,7 +526,7 @@ func (o *Record) AddAnswers(ctx context.Context, exec boil.ContextExecutor, inse
 	var err error
 	for _, rel := range related {
 		if insert {
-			rel.RecordID = o.RecordID
+			rel.RecordID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
@@ -536,7 +536,7 @@ func (o *Record) AddAnswers(ctx context.Context, exec boil.ContextExecutor, inse
 				strmangle.SetParamNames("\"", "\"", 1, []string{"record_id"}),
 				strmangle.WhereClause("\"", "\"", 2, answerPrimaryKeyColumns),
 			)
-			values := []interface{}{o.RecordID, rel.RecordID, rel.OwnerID, rel.AnswerID, rel.AnswerTarget, rel.AnswerType}
+			values := []interface{}{o.ID, rel.ID}
 
 			if boil.IsDebug(ctx) {
 				writer := boil.DebugWriterFrom(ctx)
@@ -547,7 +547,7 @@ func (o *Record) AddAnswers(ctx context.Context, exec boil.ContextExecutor, inse
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			rel.RecordID = o.RecordID
+			rel.RecordID = o.ID
 		}
 	}
 
@@ -584,7 +584,7 @@ func Records(mods ...qm.QueryMod) recordQuery {
 
 // FindRecord retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindRecord(ctx context.Context, exec boil.ContextExecutor, record string, recordType string, selectCols ...string) (*Record, error) {
+func FindRecord(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*Record, error) {
 	recordObj := &Record{}
 
 	sel := "*"
@@ -592,10 +592,10 @@ func FindRecord(ctx context.Context, exec boil.ContextExecutor, record string, r
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from \"records\" where \"record\"=$1 AND \"record_type\"=$2", sel,
+		"select %s from \"records\" where \"id\"=$1", sel,
 	)
 
-	q := queries.Raw(query, record, recordType)
+	q := queries.Raw(query, iD)
 
 	err := q.Bind(ctx, exec, recordObj)
 	if err != nil {
@@ -847,7 +847,7 @@ func (o *Record) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, 
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), recordPrimaryKeyMapping)
-	sql := "DELETE FROM \"records\" WHERE \"record\"=$1 AND \"record_type\"=$2"
+	sql := "DELETE FROM \"records\" WHERE \"id\"=$1"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -944,7 +944,7 @@ func (o RecordSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (
 // Reload refetches the object from the database
 // using the primary keys with an executor.
 func (o *Record) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindRecord(ctx, exec, o.Record, o.RecordType)
+	ret, err := FindRecord(ctx, exec, o.ID)
 	if err != nil {
 		return err
 	}
@@ -983,16 +983,16 @@ func (o *RecordSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) 
 }
 
 // RecordExists checks if the Record row exists.
-func RecordExists(ctx context.Context, exec boil.ContextExecutor, record string, recordType string) (bool, error) {
+func RecordExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from \"records\" where \"record\"=$1 AND \"record_type\"=$2 limit 1)"
+	sql := "select exists(select 1 from \"records\" where \"id\"=$1 limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
 		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, record, recordType)
+		fmt.Fprintln(writer, iD)
 	}
-	row := exec.QueryRowContext(ctx, sql, record, recordType)
+	row := exec.QueryRowContext(ctx, sql, iD)
 
 	err := row.Scan(&exists)
 	if err != nil {

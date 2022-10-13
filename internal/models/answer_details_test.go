@@ -15,29 +15,29 @@ import (
 	"github.com/volatiletech/strmangle"
 )
 
-func testAnswerExtrasUpsert(t *testing.T) {
+func testAnswerDetailsUpsert(t *testing.T) {
 	t.Parallel()
 
-	if len(answerExtrasAllColumns) == len(answerExtrasPrimaryKeyColumns) {
+	if len(answerDetailAllColumns) == len(answerDetailPrimaryKeyColumns) {
 		t.Skip("Skipping table with only primary key columns")
 	}
 
 	seed := randomize.NewSeed()
 	var err error
 	// Attempt the INSERT side of an UPSERT
-	o := AnswerExtras{}
-	if err = randomize.Struct(seed, &o, answerExtrasDBTypes, true); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := AnswerDetail{}
+	if err = randomize.Struct(seed, &o, answerDetailDBTypes, true); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 	if err = o.Upsert(ctx, tx, false, nil, boil.Infer(), boil.Infer()); err != nil {
-		t.Errorf("Unable to upsert AnswerExtras: %s", err)
+		t.Errorf("Unable to upsert AnswerDetail: %s", err)
 	}
 
-	count, err := AnswerExtras().Count(ctx, tx)
+	count, err := AnswerDetails().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -46,15 +46,15 @@ func testAnswerExtrasUpsert(t *testing.T) {
 	}
 
 	// Attempt the UPDATE side of an UPSERT
-	if err = randomize.Struct(seed, &o, answerExtrasDBTypes, false, answerExtrasPrimaryKeyColumns...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	if err = randomize.Struct(seed, &o, answerDetailDBTypes, false, answerDetailPrimaryKeyColumns...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	if err = o.Upsert(ctx, tx, true, nil, boil.Infer(), boil.Infer()); err != nil {
-		t.Errorf("Unable to upsert AnswerExtras: %s", err)
+		t.Errorf("Unable to upsert AnswerDetail: %s", err)
 	}
 
-	count, err = AnswerExtras().Count(ctx, tx)
+	count, err = AnswerDetails().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -69,24 +69,24 @@ var (
 	_ = queries.Equal
 )
 
-func testAnswerExtras(t *testing.T) {
+func testAnswerDetails(t *testing.T) {
 	t.Parallel()
 
-	query := AnswerExtras()
+	query := AnswerDetails()
 
 	if query.Query == nil {
 		t.Error("expected a query, got nothing")
 	}
 }
 
-func testAnswerExtrasDelete(t *testing.T) {
+func testAnswerDetailsDelete(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -102,7 +102,7 @@ func testAnswerExtrasDelete(t *testing.T) {
 		t.Error("should only have deleted one row, but affected:", rowsAff)
 	}
 
-	count, err := AnswerExtras().Count(ctx, tx)
+	count, err := AnswerDetails().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -112,14 +112,14 @@ func testAnswerExtrasDelete(t *testing.T) {
 	}
 }
 
-func testAnswerExtrasQueryDeleteAll(t *testing.T) {
+func testAnswerDetailsQueryDeleteAll(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -129,13 +129,13 @@ func testAnswerExtrasQueryDeleteAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	if rowsAff, err := AnswerExtras().DeleteAll(ctx, tx); err != nil {
+	if rowsAff, err := AnswerDetails().DeleteAll(ctx, tx); err != nil {
 		t.Error(err)
 	} else if rowsAff != 1 {
 		t.Error("should only have deleted one row, but affected:", rowsAff)
 	}
 
-	count, err := AnswerExtras().Count(ctx, tx)
+	count, err := AnswerDetails().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -145,14 +145,14 @@ func testAnswerExtrasQueryDeleteAll(t *testing.T) {
 	}
 }
 
-func testAnswerExtrasSliceDeleteAll(t *testing.T) {
+func testAnswerDetailsSliceDeleteAll(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -162,7 +162,7 @@ func testAnswerExtrasSliceDeleteAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	slice := AnswerExtrasSlice{o}
+	slice := AnswerDetailSlice{o}
 
 	if rowsAff, err := slice.DeleteAll(ctx, tx); err != nil {
 		t.Error(err)
@@ -170,7 +170,7 @@ func testAnswerExtrasSliceDeleteAll(t *testing.T) {
 		t.Error("should only have deleted one row, but affected:", rowsAff)
 	}
 
-	count, err := AnswerExtras().Count(ctx, tx)
+	count, err := AnswerDetails().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -180,14 +180,14 @@ func testAnswerExtrasSliceDeleteAll(t *testing.T) {
 	}
 }
 
-func testAnswerExtrasExists(t *testing.T) {
+func testAnswerDetailsExists(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -197,23 +197,23 @@ func testAnswerExtrasExists(t *testing.T) {
 		t.Error(err)
 	}
 
-	e, err := AnswerExtrasExists(ctx, tx, o.AnswerID)
+	e, err := AnswerDetailExists(ctx, tx, o.ID)
 	if err != nil {
-		t.Errorf("Unable to check if AnswerExtras exists: %s", err)
+		t.Errorf("Unable to check if AnswerDetail exists: %s", err)
 	}
 	if !e {
-		t.Errorf("Expected AnswerExtrasExists to return true, but got false.")
+		t.Errorf("Expected AnswerDetailExists to return true, but got false.")
 	}
 }
 
-func testAnswerExtrasFind(t *testing.T) {
+func testAnswerDetailsFind(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -223,24 +223,24 @@ func testAnswerExtrasFind(t *testing.T) {
 		t.Error(err)
 	}
 
-	answerExtrasFound, err := FindAnswerExtras(ctx, tx, o.AnswerID)
+	answerDetailFound, err := FindAnswerDetail(ctx, tx, o.ID)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if answerExtrasFound == nil {
+	if answerDetailFound == nil {
 		t.Error("want a record, got nil")
 	}
 }
 
-func testAnswerExtrasBind(t *testing.T) {
+func testAnswerDetailsBind(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -250,19 +250,19 @@ func testAnswerExtrasBind(t *testing.T) {
 		t.Error(err)
 	}
 
-	if err = AnswerExtras().Bind(ctx, tx, o); err != nil {
+	if err = AnswerDetails().Bind(ctx, tx, o); err != nil {
 		t.Error(err)
 	}
 }
 
-func testAnswerExtrasOne(t *testing.T) {
+func testAnswerDetailsOne(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -272,38 +272,38 @@ func testAnswerExtrasOne(t *testing.T) {
 		t.Error(err)
 	}
 
-	if x, err := AnswerExtras().One(ctx, tx); err != nil {
+	if x, err := AnswerDetails().One(ctx, tx); err != nil {
 		t.Error(err)
 	} else if x == nil {
 		t.Error("expected to get a non nil record")
 	}
 }
 
-func testAnswerExtrasAll(t *testing.T) {
+func testAnswerDetailsAll(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	answerExtrasOne := &AnswerExtras{}
-	answerExtrasTwo := &AnswerExtras{}
-	if err = randomize.Struct(seed, answerExtrasOne, answerExtrasDBTypes, false, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	answerDetailOne := &AnswerDetail{}
+	answerDetailTwo := &AnswerDetail{}
+	if err = randomize.Struct(seed, answerDetailOne, answerDetailDBTypes, false, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
-	if err = randomize.Struct(seed, answerExtrasTwo, answerExtrasDBTypes, false, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	if err = randomize.Struct(seed, answerDetailTwo, answerDetailDBTypes, false, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
-	if err = answerExtrasOne.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err = answerDetailOne.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Error(err)
 	}
-	if err = answerExtrasTwo.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err = answerDetailTwo.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Error(err)
 	}
 
-	slice, err := AnswerExtras().All(ctx, tx)
+	slice, err := AnswerDetails().All(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -313,31 +313,31 @@ func testAnswerExtrasAll(t *testing.T) {
 	}
 }
 
-func testAnswerExtrasCount(t *testing.T) {
+func testAnswerDetailsCount(t *testing.T) {
 	t.Parallel()
 
 	var err error
 	seed := randomize.NewSeed()
-	answerExtrasOne := &AnswerExtras{}
-	answerExtrasTwo := &AnswerExtras{}
-	if err = randomize.Struct(seed, answerExtrasOne, answerExtrasDBTypes, false, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	answerDetailOne := &AnswerDetail{}
+	answerDetailTwo := &AnswerDetail{}
+	if err = randomize.Struct(seed, answerDetailOne, answerDetailDBTypes, false, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
-	if err = randomize.Struct(seed, answerExtrasTwo, answerExtrasDBTypes, false, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	if err = randomize.Struct(seed, answerDetailTwo, answerDetailDBTypes, false, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
-	if err = answerExtrasOne.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err = answerDetailOne.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Error(err)
 	}
-	if err = answerExtrasTwo.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err = answerDetailTwo.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Error(err)
 	}
 
-	count, err := AnswerExtras().Count(ctx, tx)
+	count, err := AnswerDetails().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -347,155 +347,155 @@ func testAnswerExtrasCount(t *testing.T) {
 	}
 }
 
-func answerExtrasBeforeInsertHook(ctx context.Context, e boil.ContextExecutor, o *AnswerExtras) error {
-	*o = AnswerExtras{}
+func answerDetailBeforeInsertHook(ctx context.Context, e boil.ContextExecutor, o *AnswerDetail) error {
+	*o = AnswerDetail{}
 	return nil
 }
 
-func answerExtrasAfterInsertHook(ctx context.Context, e boil.ContextExecutor, o *AnswerExtras) error {
-	*o = AnswerExtras{}
+func answerDetailAfterInsertHook(ctx context.Context, e boil.ContextExecutor, o *AnswerDetail) error {
+	*o = AnswerDetail{}
 	return nil
 }
 
-func answerExtrasAfterSelectHook(ctx context.Context, e boil.ContextExecutor, o *AnswerExtras) error {
-	*o = AnswerExtras{}
+func answerDetailAfterSelectHook(ctx context.Context, e boil.ContextExecutor, o *AnswerDetail) error {
+	*o = AnswerDetail{}
 	return nil
 }
 
-func answerExtrasBeforeUpdateHook(ctx context.Context, e boil.ContextExecutor, o *AnswerExtras) error {
-	*o = AnswerExtras{}
+func answerDetailBeforeUpdateHook(ctx context.Context, e boil.ContextExecutor, o *AnswerDetail) error {
+	*o = AnswerDetail{}
 	return nil
 }
 
-func answerExtrasAfterUpdateHook(ctx context.Context, e boil.ContextExecutor, o *AnswerExtras) error {
-	*o = AnswerExtras{}
+func answerDetailAfterUpdateHook(ctx context.Context, e boil.ContextExecutor, o *AnswerDetail) error {
+	*o = AnswerDetail{}
 	return nil
 }
 
-func answerExtrasBeforeDeleteHook(ctx context.Context, e boil.ContextExecutor, o *AnswerExtras) error {
-	*o = AnswerExtras{}
+func answerDetailBeforeDeleteHook(ctx context.Context, e boil.ContextExecutor, o *AnswerDetail) error {
+	*o = AnswerDetail{}
 	return nil
 }
 
-func answerExtrasAfterDeleteHook(ctx context.Context, e boil.ContextExecutor, o *AnswerExtras) error {
-	*o = AnswerExtras{}
+func answerDetailAfterDeleteHook(ctx context.Context, e boil.ContextExecutor, o *AnswerDetail) error {
+	*o = AnswerDetail{}
 	return nil
 }
 
-func answerExtrasBeforeUpsertHook(ctx context.Context, e boil.ContextExecutor, o *AnswerExtras) error {
-	*o = AnswerExtras{}
+func answerDetailBeforeUpsertHook(ctx context.Context, e boil.ContextExecutor, o *AnswerDetail) error {
+	*o = AnswerDetail{}
 	return nil
 }
 
-func answerExtrasAfterUpsertHook(ctx context.Context, e boil.ContextExecutor, o *AnswerExtras) error {
-	*o = AnswerExtras{}
+func answerDetailAfterUpsertHook(ctx context.Context, e boil.ContextExecutor, o *AnswerDetail) error {
+	*o = AnswerDetail{}
 	return nil
 }
 
-func testAnswerExtrasHooks(t *testing.T) {
+func testAnswerDetailsHooks(t *testing.T) {
 	t.Parallel()
 
 	var err error
 
 	ctx := context.Background()
-	empty := &AnswerExtras{}
-	o := &AnswerExtras{}
+	empty := &AnswerDetail{}
+	o := &AnswerDetail{}
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, false); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras object: %s", err)
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, false); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail object: %s", err)
 	}
 
-	AddAnswerExtrasHook(boil.BeforeInsertHook, answerExtrasBeforeInsertHook)
+	AddAnswerDetailHook(boil.BeforeInsertHook, answerDetailBeforeInsertHook)
 	if err = o.doBeforeInsertHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doBeforeInsertHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected BeforeInsertHook function to empty object, but got: %#v", o)
 	}
-	answerExtrasBeforeInsertHooks = []AnswerExtrasHook{}
+	answerDetailBeforeInsertHooks = []AnswerDetailHook{}
 
-	AddAnswerExtrasHook(boil.AfterInsertHook, answerExtrasAfterInsertHook)
+	AddAnswerDetailHook(boil.AfterInsertHook, answerDetailAfterInsertHook)
 	if err = o.doAfterInsertHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterInsertHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterInsertHook function to empty object, but got: %#v", o)
 	}
-	answerExtrasAfterInsertHooks = []AnswerExtrasHook{}
+	answerDetailAfterInsertHooks = []AnswerDetailHook{}
 
-	AddAnswerExtrasHook(boil.AfterSelectHook, answerExtrasAfterSelectHook)
+	AddAnswerDetailHook(boil.AfterSelectHook, answerDetailAfterSelectHook)
 	if err = o.doAfterSelectHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterSelectHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterSelectHook function to empty object, but got: %#v", o)
 	}
-	answerExtrasAfterSelectHooks = []AnswerExtrasHook{}
+	answerDetailAfterSelectHooks = []AnswerDetailHook{}
 
-	AddAnswerExtrasHook(boil.BeforeUpdateHook, answerExtrasBeforeUpdateHook)
+	AddAnswerDetailHook(boil.BeforeUpdateHook, answerDetailBeforeUpdateHook)
 	if err = o.doBeforeUpdateHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doBeforeUpdateHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected BeforeUpdateHook function to empty object, but got: %#v", o)
 	}
-	answerExtrasBeforeUpdateHooks = []AnswerExtrasHook{}
+	answerDetailBeforeUpdateHooks = []AnswerDetailHook{}
 
-	AddAnswerExtrasHook(boil.AfterUpdateHook, answerExtrasAfterUpdateHook)
+	AddAnswerDetailHook(boil.AfterUpdateHook, answerDetailAfterUpdateHook)
 	if err = o.doAfterUpdateHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterUpdateHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterUpdateHook function to empty object, but got: %#v", o)
 	}
-	answerExtrasAfterUpdateHooks = []AnswerExtrasHook{}
+	answerDetailAfterUpdateHooks = []AnswerDetailHook{}
 
-	AddAnswerExtrasHook(boil.BeforeDeleteHook, answerExtrasBeforeDeleteHook)
+	AddAnswerDetailHook(boil.BeforeDeleteHook, answerDetailBeforeDeleteHook)
 	if err = o.doBeforeDeleteHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doBeforeDeleteHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected BeforeDeleteHook function to empty object, but got: %#v", o)
 	}
-	answerExtrasBeforeDeleteHooks = []AnswerExtrasHook{}
+	answerDetailBeforeDeleteHooks = []AnswerDetailHook{}
 
-	AddAnswerExtrasHook(boil.AfterDeleteHook, answerExtrasAfterDeleteHook)
+	AddAnswerDetailHook(boil.AfterDeleteHook, answerDetailAfterDeleteHook)
 	if err = o.doAfterDeleteHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterDeleteHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterDeleteHook function to empty object, but got: %#v", o)
 	}
-	answerExtrasAfterDeleteHooks = []AnswerExtrasHook{}
+	answerDetailAfterDeleteHooks = []AnswerDetailHook{}
 
-	AddAnswerExtrasHook(boil.BeforeUpsertHook, answerExtrasBeforeUpsertHook)
+	AddAnswerDetailHook(boil.BeforeUpsertHook, answerDetailBeforeUpsertHook)
 	if err = o.doBeforeUpsertHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doBeforeUpsertHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected BeforeUpsertHook function to empty object, but got: %#v", o)
 	}
-	answerExtrasBeforeUpsertHooks = []AnswerExtrasHook{}
+	answerDetailBeforeUpsertHooks = []AnswerDetailHook{}
 
-	AddAnswerExtrasHook(boil.AfterUpsertHook, answerExtrasAfterUpsertHook)
+	AddAnswerDetailHook(boil.AfterUpsertHook, answerDetailAfterUpsertHook)
 	if err = o.doAfterUpsertHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterUpsertHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterUpsertHook function to empty object, but got: %#v", o)
 	}
-	answerExtrasAfterUpsertHooks = []AnswerExtrasHook{}
+	answerDetailAfterUpsertHooks = []AnswerDetailHook{}
 }
 
-func testAnswerExtrasInsert(t *testing.T) {
+func testAnswerDetailsInsert(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -505,7 +505,7 @@ func testAnswerExtrasInsert(t *testing.T) {
 		t.Error(err)
 	}
 
-	count, err := AnswerExtras().Count(ctx, tx)
+	count, err := AnswerDetails().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -515,24 +515,24 @@ func testAnswerExtrasInsert(t *testing.T) {
 	}
 }
 
-func testAnswerExtrasInsertWhitelist(t *testing.T) {
+func testAnswerDetailsInsertWhitelist(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
-	if err = o.Insert(ctx, tx, boil.Whitelist(answerExtrasColumnsWithoutDefault...)); err != nil {
+	if err = o.Insert(ctx, tx, boil.Whitelist(answerDetailColumnsWithoutDefault...)); err != nil {
 		t.Error(err)
 	}
 
-	count, err := AnswerExtras().Count(ctx, tx)
+	count, err := AnswerDetails().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -542,17 +542,17 @@ func testAnswerExtrasInsertWhitelist(t *testing.T) {
 	}
 }
 
-func testAnswerExtrasToOneAnswerUsingAnswer(t *testing.T) {
+func testAnswerDetailToOneAnswerUsingAnswer(t *testing.T) {
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var local AnswerExtras
+	var local AnswerDetail
 	var foreign Answer
 
 	seed := randomize.NewSeed()
-	if err := randomize.Struct(seed, &local, answerExtrasDBTypes, false, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	if err := randomize.Struct(seed, &local, answerDetailDBTypes, false, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 	if err := randomize.Struct(seed, &foreign, answerDBTypes, false, answerColumnsWithDefault...); err != nil {
 		t.Errorf("Unable to randomize Answer struct: %s", err)
@@ -562,7 +562,7 @@ func testAnswerExtrasToOneAnswerUsingAnswer(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	local.AnswerID = foreign.AnswerID
+	local.AnswerID = foreign.ID
 	if err := local.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
 	}
@@ -572,12 +572,12 @@ func testAnswerExtrasToOneAnswerUsingAnswer(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if check.AnswerID != foreign.AnswerID {
-		t.Errorf("want: %v, got %v", foreign.AnswerID, check.AnswerID)
+	if check.ID != foreign.ID {
+		t.Errorf("want: %v, got %v", foreign.ID, check.ID)
 	}
 
-	slice := AnswerExtrasSlice{&local}
-	if err = local.L.LoadAnswer(ctx, tx, false, (*[]*AnswerExtras)(&slice), nil); err != nil {
+	slice := AnswerDetailSlice{&local}
+	if err = local.L.LoadAnswer(ctx, tx, false, (*[]*AnswerDetail)(&slice), nil); err != nil {
 		t.Fatal(err)
 	}
 	if local.R.Answer == nil {
@@ -593,18 +593,18 @@ func testAnswerExtrasToOneAnswerUsingAnswer(t *testing.T) {
 	}
 }
 
-func testAnswerExtrasToOneSetOpAnswerUsingAnswer(t *testing.T) {
+func testAnswerDetailToOneSetOpAnswerUsingAnswer(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var a AnswerExtras
+	var a AnswerDetail
 	var b, c Answer
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, &a, answerExtrasDBTypes, false, strmangle.SetComplement(answerExtrasPrimaryKeyColumns, answerExtrasColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &a, answerDetailDBTypes, false, strmangle.SetComplement(answerDetailPrimaryKeyColumns, answerDetailColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
 	if err = randomize.Struct(seed, &b, answerDBTypes, false, strmangle.SetComplement(answerPrimaryKeyColumns, answerColumnsWithoutDefault)...); err != nil {
@@ -631,30 +631,34 @@ func testAnswerExtrasToOneSetOpAnswerUsingAnswer(t *testing.T) {
 			t.Error("relationship struct not set to correct value")
 		}
 
-		if x.R.AnswerExtras != &a {
+		if x.R.AnswerDetail != &a {
 			t.Error("failed to append to foreign relationship struct")
 		}
-		if a.AnswerID != x.AnswerID {
+		if a.AnswerID != x.ID {
 			t.Error("foreign key was wrong value", a.AnswerID)
 		}
 
-		if exists, err := AnswerExtrasExists(ctx, tx, a.AnswerID); err != nil {
-			t.Fatal(err)
-		} else if !exists {
-			t.Error("want 'a' to exist")
+		zero := reflect.Zero(reflect.TypeOf(a.AnswerID))
+		reflect.Indirect(reflect.ValueOf(&a.AnswerID)).Set(zero)
+
+		if err = a.Reload(ctx, tx); err != nil {
+			t.Fatal("failed to reload", err)
 		}
 
+		if a.AnswerID != x.ID {
+			t.Error("foreign key was wrong value", a.AnswerID, x.ID)
+		}
 	}
 }
 
-func testAnswerExtrasReload(t *testing.T) {
+func testAnswerDetailsReload(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -669,14 +673,14 @@ func testAnswerExtrasReload(t *testing.T) {
 	}
 }
 
-func testAnswerExtrasReloadAll(t *testing.T) {
+func testAnswerDetailsReloadAll(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -686,21 +690,21 @@ func testAnswerExtrasReloadAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	slice := AnswerExtrasSlice{o}
+	slice := AnswerDetailSlice{o}
 
 	if err = slice.ReloadAll(ctx, tx); err != nil {
 		t.Error(err)
 	}
 }
 
-func testAnswerExtrasSelect(t *testing.T) {
+func testAnswerDetailsSelect(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -710,7 +714,7 @@ func testAnswerExtrasSelect(t *testing.T) {
 		t.Error(err)
 	}
 
-	slice, err := AnswerExtras().All(ctx, tx)
+	slice, err := AnswerDetails().All(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -721,25 +725,25 @@ func testAnswerExtrasSelect(t *testing.T) {
 }
 
 var (
-	answerExtrasDBTypes = map[string]string{`AnswerID`: `uuid`, `Port`: `int8`, `Priority`: `int8`, `Protocol`: `string`, `Weight`: `string`, `CreatedAt`: `timestamptz`, `UpdatedAt`: `timestamptz`}
+	answerDetailDBTypes = map[string]string{`ID`: `uuid`, `AnswerID`: `uuid`, `Port`: `int8`, `Priority`: `int8`, `Protocol`: `string`, `Weight`: `string`, `CreatedAt`: `timestamptz`, `UpdatedAt`: `timestamptz`}
 	_                   = bytes.MinRead
 )
 
-func testAnswerExtrasUpdate(t *testing.T) {
+func testAnswerDetailsUpdate(t *testing.T) {
 	t.Parallel()
 
-	if 0 == len(answerExtrasPrimaryKeyColumns) {
+	if 0 == len(answerDetailPrimaryKeyColumns) {
 		t.Skip("Skipping table with no primary key columns")
 	}
-	if len(answerExtrasAllColumns) == len(answerExtrasPrimaryKeyColumns) {
+	if len(answerDetailAllColumns) == len(answerDetailPrimaryKeyColumns) {
 		t.Skip("Skipping table with only primary key columns")
 	}
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -749,7 +753,7 @@ func testAnswerExtrasUpdate(t *testing.T) {
 		t.Error(err)
 	}
 
-	count, err := AnswerExtras().Count(ctx, tx)
+	count, err := AnswerDetails().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -758,8 +762,8 @@ func testAnswerExtrasUpdate(t *testing.T) {
 		t.Error("want one record, got:", count)
 	}
 
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasPrimaryKeyColumns...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailPrimaryKeyColumns...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	if rowsAff, err := o.Update(ctx, tx, boil.Infer()); err != nil {
@@ -769,18 +773,18 @@ func testAnswerExtrasUpdate(t *testing.T) {
 	}
 }
 
-func testAnswerExtrasSliceUpdateAll(t *testing.T) {
+func testAnswerDetailsSliceUpdateAll(t *testing.T) {
 	t.Parallel()
 
-	if len(answerExtrasAllColumns) == len(answerExtrasPrimaryKeyColumns) {
+	if len(answerDetailAllColumns) == len(answerDetailPrimaryKeyColumns) {
 		t.Skip("Skipping table with only primary key columns")
 	}
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &AnswerExtras{}
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	o := &AnswerDetail{}
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -790,7 +794,7 @@ func testAnswerExtrasSliceUpdateAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	count, err := AnswerExtras().Count(ctx, tx)
+	count, err := AnswerDetails().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -799,18 +803,18 @@ func testAnswerExtrasSliceUpdateAll(t *testing.T) {
 		t.Error("want one record, got:", count)
 	}
 
-	if err = randomize.Struct(seed, o, answerExtrasDBTypes, true, answerExtrasPrimaryKeyColumns...); err != nil {
-		t.Errorf("Unable to randomize AnswerExtras struct: %s", err)
+	if err = randomize.Struct(seed, o, answerDetailDBTypes, true, answerDetailPrimaryKeyColumns...); err != nil {
+		t.Errorf("Unable to randomize AnswerDetail struct: %s", err)
 	}
 
 	// Remove Primary keys and unique columns from what we plan to update
 	var fields []string
-	if strmangle.StringSliceMatch(answerExtrasAllColumns, answerExtrasPrimaryKeyColumns) {
-		fields = answerExtrasAllColumns
+	if strmangle.StringSliceMatch(answerDetailAllColumns, answerDetailPrimaryKeyColumns) {
+		fields = answerDetailAllColumns
 	} else {
 		fields = strmangle.SetComplement(
-			answerExtrasAllColumns,
-			answerExtrasPrimaryKeyColumns,
+			answerDetailAllColumns,
+			answerDetailPrimaryKeyColumns,
 		)
 	}
 
@@ -828,7 +832,7 @@ func testAnswerExtrasSliceUpdateAll(t *testing.T) {
 		}
 	}
 
-	slice := AnswerExtrasSlice{o}
+	slice := AnswerDetailSlice{o}
 	if rowsAff, err := slice.UpdateAll(ctx, tx, updateMap); err != nil {
 		t.Error(err)
 	} else if rowsAff != 1 {

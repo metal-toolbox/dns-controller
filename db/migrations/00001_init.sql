@@ -2,47 +2,47 @@
 -- +goose StatementBegin
 
 CREATE TABLE owners (
-  owner_id UUID NOT NULL DEFAULT gen_random_uuid() UNIQUE,
-  owner_name STRING NOT NULL,
-  owner_origin STRING NOT NULL,
-  owner_service STRING NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
-  updated_at TIMESTAMPTZ DEFAULT now() NOT NULL,
-  CONSTRAINT "primary" PRIMARY KEY (owner_name, owner_origin, owner_service)
-);
+   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
+   name STRING NOT NULL,
+   origin STRING NOT NULL,
+   service STRING NOT NULL,
+   created_at TIMESTAMPTZ NOT NULL,
+   updated_at TIMESTAMPTZ NOT NULL
+ );
 
-CREATE TABLE records (
-  record_id UUID NOT NULL DEFAULT gen_random_uuid() UNIQUE,
-  record STRING NOT NULL,
-  record_type STRING NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
-  updated_at TIMESTAMPTZ DEFAULT now() NOT NULL,
-  CONSTRAINT "primary" PRIMARY KEY (record, record_type)
-);
+ CREATE TABLE records (
+   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
+   record STRING NOT NULL,
+   record_type STRING NOT NULL,
+   created_at TIMESTAMPTZ NOT NULL,
+   updated_at TIMESTAMPTZ NOT NULL,
+   UNIQUE INDEX idx_record_record_type (record, record_type)
+ );
 
-CREATE TABLE answers (
-  answer_id UUID NOT NULL DEFAULT gen_random_uuid() UNIQUE,
-  answer_target STRING NOT NULL,
-  answer_type STRING NOT NULL,
-  has_extras BOOL NOT NULL,
-  answer_ttl INT DEFAULT 3600 NOT NULL,
-  owner_id UUID NOT NULL REFERENCES owners(owner_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  record_id UUID NOT NULL REFERENCES records(record_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
-  updated_at TIMESTAMPTZ DEFAULT now() NOT NULL,
-  CONSTRAINT "primary" PRIMARY KEY (record_id, owner_id, answer_id, answer_target, answer_type)
-);
+ CREATE TABLE answers (
+   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
+   target STRING NOT NULL,
+   type STRING NOT NULL,
+   ttl INT DEFAULT 3600 NOT NULL,
+   has_details BOOL NOT NULL,
+   owner_id UUID NOT NULL REFERENCES owners(id) ON DELETE CASCADE ON UPDATE CASCADE,
+   record_id UUID NOT NULL REFERENCES records(id) ON DELETE CASCADE ON UPDATE CASCADE,
+   created_at TIMESTAMPTZ NOT NULL,
+   updated_at TIMESTAMPTZ NOT NULL,
+   INDEX idx_record_owner (record_id, owner_id)
+ );
 
-CREATE TABLE answer_extras (
-  answer_id UUID NOT NULL REFERENCES answers(answer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  port INT,
-  priority INT,
-  protocol STRING,
-  weight STRING,
-  created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
-  updated_at TIMESTAMPTZ DEFAULT now() NOT NULL,
-  CONSTRAINT "primary" PRIMARY KEY (answer_id)
-); 
+ CREATE TABLE answer_details (
+   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
+   answer_id UUID NOT NULL REFERENCES answers(id) ON DELETE CASCADE ON UPDATE CASCADE,
+   port INT,
+   priority INT,
+   protocol STRING,
+   weight STRING,
+   created_at TIMESTAMPTZ NOT NULL,
+   updated_at TIMESTAMPTZ NOT NULL,
+   UNIQUE INDEX idx_answer_id (answer_id)
+ ); 
 
 -- +goose StatementEnd
 
@@ -52,6 +52,6 @@ CREATE TABLE answer_extras (
 DROP TABLE answers;
 DROP TABLE records;
 DROP TABLE owners;
-DROP TABLE answer_extras;
+DROP TABLE answer_details;
 
 -- +goose StatementEnd
