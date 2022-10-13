@@ -11,17 +11,13 @@ linters-settings:
 linters:
   enable:
     # default linters
-    - deadcode
     - errcheck
     - gosimple
     - govet
     - ineffassign
     - staticcheck
-    - structcheck
     - typecheck
     - unused
-    - varcheck
-
     # additional linters
     - bodyclose
     - gocritic
@@ -44,7 +40,7 @@ issues:
   exclude-rules:
     - path: internal/models/*
       linters:
-        - typecheckgit 
+        - typecheck
   exclude:
     # Default excludes from `golangci-lint run --help` with EXC0002 removed
     # EXC0001 errcheck: Almost all programs ignore errors on these functions and in most cases it's ok
