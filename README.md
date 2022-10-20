@@ -2,6 +2,12 @@
 
 `dns-controller` is a simple controller that allows you to create and update [SRV records](https://datatracker.ietf.org/doc/html/rfc2782), as well as remove them when no endpoints are present.
 
+
+## Project status
+
+This project is in a alpha level / development phase. Each PR will strive to add functionality, although that may not be functionaly to the end state goals.
+
+
 ## About
 
 SRV records are a lightweight service discovery method that can be implemented in a wide range of applications. It uses the well-known DNS protocol to retrieve information about the location, port, and protocol of particular service. `dns-controller` centrally manages the lifecycle of these records.
@@ -31,7 +37,7 @@ Follow the format `_service._proto.name. ttl IN SRV priority weight port target.
 
 ```go
 type Answer struct {
- 
+
   owner    string
   protocol string
   service  string
@@ -57,7 +63,7 @@ owner:
   origin: cluster-a
   owner: team-a
   service: artifacts
-answer:  
+answer:
   priority: 0
   protocol: tcp
   port: 443
