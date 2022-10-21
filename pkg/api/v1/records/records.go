@@ -121,10 +121,10 @@ func (r *Record) ToDBModel() (*models.Record, error) {
 		UpdatedAt: r.UpdatedAt,
 	}
 
-	if isSupportedRecordType(r.Type) {
+	if err := isSupportedRecordType(r.Type); err == nil {
 		dbModel.RecordType = r.Type
 	} else {
-		return nil, ErrorUnsupportedType
+		return nil, err
 	}
 
 	if r.UUID.String() != uuid.Nil.String() {
@@ -174,8 +174,8 @@ func (r *Record) validate() error {
 		return ErrorNoRecordType
 	}
 
-	if !isSupportedRecordType(r.Type) {
-		return ErrorUnsupportedType
+	if err := isSupportedRecordType(r.Type); err != nil {
+		return err
 	}
 
 	return nil
@@ -185,18 +185,16 @@ func (r *Record) validate() error {
 // this is by no means exhaustive
 func supportedRecordTypes() map[string]bool {
 	return map[string]bool{
-		"A":     true,
-		"AAAA":  false,
-		"CNAME": false,
-		"SRV":   true,
+		"A":   true,
+		"SRV": true,
 	}
 }
 
-func isSupportedRecordType(rtype string) bool {
+func isSupportedRecordType(rtype string) error {
 	var supportedTypes = supportedRecordTypes()
-	if _, ok := supportedTypes[rtype]; !ok {
-		return supportedTypes[rtype]
+	if _, ok := supportedTypes[rtype]; ok {
+		return nil
 	}
 
-	return false
+	return ErrorUnsupportedType
 }
