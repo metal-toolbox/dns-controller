@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	rx "go.hollow.sh/dnscontroller/pkg/api/v1/record"
+	rx "go.hollow.sh/dnscontroller/pkg/api/v1/records"
 )
 
 func (r *Router) deleteRecord(c *gin.Context) {

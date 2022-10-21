@@ -121,10 +121,9 @@ func (r *Record) ToDBModel() (*models.Record, error) {
 		UpdatedAt: r.UpdatedAt,
 	}
 
-	switch strings.ToUpper(r.Type) {
-	case "A", "CNAME":
+	if isSupportedRecordType(r.Type) {
 		dbModel.RecordType = r.Type
-	default:
+	} else {
 		return nil, ErrorUnsupportedType
 	}
 
@@ -175,5 +174,29 @@ func (r *Record) validate() error {
 		return ErrorNoRecordType
 	}
 
+	if !isSupportedRecordType(r.Type) {
+		return ErrorUnsupportedType
+	}
+
 	return nil
+}
+
+// A few common type that might be supported in the future,
+// this is by no means exhaustive
+func supportedRecordTypes() map[string]bool {
+	return map[string]bool{
+		"A":     true,
+		"AAAA":  false,
+		"CNAME": false,
+		"SRV":   true,
+	}
+}
+
+func isSupportedRecordType(rtype string) bool {
+	var supportedTypes = supportedRecordTypes()
+	if _, ok := supportedTypes[rtype]; !ok {
+		return supportedTypes[rtype]
+	}
+
+	return false
 }
