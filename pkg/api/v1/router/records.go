@@ -30,7 +30,7 @@ func (r *Router) createRecord(c *gin.Context) {
 
 	err = record.FindOrCreate(c.Request.Context(), r.db)
 	if err != nil {
-		badRequestResponse(c, "invalid record", err)
+		badRequestResponse(c, rx.ErrorInvalidRecord.Error(), err)
 		return
 	}
 
@@ -40,7 +40,7 @@ func (r *Router) createRecord(c *gin.Context) {
 func (r *Router) getRecord(c *gin.Context) {
 	record, err := rx.NewRecord(c)
 	if err != nil {
-		badRequestResponse(c, "could not create record", err)
+		badRequestResponse(c, rx.ErrorInvalidRecord.Error(), err)
 	}
 
 	err = record.Find(c.Request.Context(), r.db)
