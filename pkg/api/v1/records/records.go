@@ -181,8 +181,7 @@ func (r *Record) validate() error {
 	return nil
 }
 
-// A few common type that might be supported in the future,
-// this is by no means exhaustive
+// Supported dns record types that are supported.
 func supportedRecordTypes() map[string]bool {
 	return map[string]bool{
 		"A":   true,
