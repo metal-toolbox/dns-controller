@@ -725,7 +725,7 @@ func testAnswerDetailsSelect(t *testing.T) {
 }
 
 var (
-	answerDetailDBTypes = map[string]string{`ID`: `uuid`, `AnswerID`: `uuid`, `Port`: `int8`, `Priority`: `int8`, `Protocol`: `string`, `Weight`: `string`, `CreatedAt`: `timestamptz`, `UpdatedAt`: `timestamptz`}
+	answerDetailDBTypes = map[string]string{`ID`: `uuid`, `AnswerID`: `uuid`, `Port`: `int8`, `Priority`: `int8`, `Protocol`: `string`, `Weight`: `int8`, `CreatedAt`: `timestamptz`, `UpdatedAt`: `timestamptz`}
 	_                   = bytes.MinRead
 )
 

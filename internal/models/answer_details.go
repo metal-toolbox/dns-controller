@@ -29,7 +29,7 @@ type AnswerDetail struct {
 	Port      null.Int64  `boil:"port" json:"port,omitempty" toml:"port" yaml:"port,omitempty"`
 	Priority  null.Int64  `boil:"priority" json:"priority,omitempty" toml:"priority" yaml:"priority,omitempty"`
 	Protocol  null.String `boil:"protocol" json:"protocol,omitempty" toml:"protocol" yaml:"protocol,omitempty"`
-	Weight    null.String `boil:"weight" json:"weight,omitempty" toml:"weight" yaml:"weight,omitempty"`
+	Weight    null.Int64  `boil:"weight" json:"weight,omitempty" toml:"weight" yaml:"weight,omitempty"`
 	CreatedAt time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt time.Time   `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
@@ -205,7 +205,7 @@ var AnswerDetailWhere = struct {
 	Port      whereHelpernull_Int64
 	Priority  whereHelpernull_Int64
 	Protocol  whereHelpernull_String
-	Weight    whereHelpernull_String
+	Weight    whereHelpernull_Int64
 	CreatedAt whereHelpertime_Time
 	UpdatedAt whereHelpertime_Time
 }{
@@ -214,7 +214,7 @@ var AnswerDetailWhere = struct {
 	Port:      whereHelpernull_Int64{field: "\"answer_details\".\"port\""},
 	Priority:  whereHelpernull_Int64{field: "\"answer_details\".\"priority\""},
 	Protocol:  whereHelpernull_String{field: "\"answer_details\".\"protocol\""},
-	Weight:    whereHelpernull_String{field: "\"answer_details\".\"weight\""},
+	Weight:    whereHelpernull_Int64{field: "\"answer_details\".\"weight\""},
 	CreatedAt: whereHelpertime_Time{field: "\"answer_details\".\"created_at\""},
 	UpdatedAt: whereHelpertime_Time{field: "\"answer_details\".\"updated_at\""},
 }

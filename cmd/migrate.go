@@ -36,7 +36,7 @@ fix                  Apply sequential ordering to migrations
 }
 
 func init() {
-	rootCmd.AddCommand(migrateCmd)
+	root.Cmd.AddCommand(migrateCmd)
 }
 
 func migrate(command string, args []string) {
