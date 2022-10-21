@@ -11,7 +11,7 @@ import (
 func (r *Router) deleteRecord(c *gin.Context) {
 	record, err := rx.NewRecord(c)
 	if err != nil {
-		badRequestResponse(c, "could not create record", err)
+		badRequestResponse(c, rx.ErrorInvalidRecord.Error(), err)
 	}
 
 	if err := record.Delete(c.Request.Context(), r.db); err != nil {
@@ -25,7 +25,7 @@ func (r *Router) deleteRecord(c *gin.Context) {
 func (r *Router) createRecord(c *gin.Context) {
 	record, err := rx.NewRecord(c)
 	if err != nil {
-		badRequestResponse(c, "could not create record", err)
+		badRequestResponse(c, rx.ErrorInvalidRecord.Error(), err)
 	}
 
 	err = record.FindOrCreate(c.Request.Context(), r.db)

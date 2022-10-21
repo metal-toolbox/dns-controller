@@ -6,9 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
-	"go.uber.org/zap"
-
 	"go.hollow.sh/toolbox/ginjwt"
+	"go.uber.org/zap"
 )
 
 const (

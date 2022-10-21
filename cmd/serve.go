@@ -15,7 +15,7 @@ import (
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "starts the dns-controller frontend server",
+	Short: "starts the dns-controller api server",
 	Run: func(cmd *cobra.Command, args []string) {
 		serve(cmd.Context())
 	},
@@ -43,7 +43,7 @@ func serve(ctx context.Context) {
 		db = dbx.NewDB(logger)
 	}
 
-	logger.Infow("starting dns-controller frontend server", "address", viper.GetString("listen"))
+	logger.Infow("starting dns-controller api server", "address", viper.GetString("listen"))
 
 	hs := &httpsrv.Server{
 		Logger: logger,
