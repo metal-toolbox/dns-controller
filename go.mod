@@ -6,7 +6,7 @@ go 1.19
 
 require (
 	github.com/XSAM/otelsql v0.16.0
-	github.com/cockroachdb/cockroach-go/v2 v2.2.14
+	github.com/cockroachdb/cockroach-go/v2 v2.3.7
 	github.com/friendsofgo/errors v0.9.2
 	github.com/gin-contrib/zap v0.1.0
 	github.com/gin-gonic/gin v1.8.1
